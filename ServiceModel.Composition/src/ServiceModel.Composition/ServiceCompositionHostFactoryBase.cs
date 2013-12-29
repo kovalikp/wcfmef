@@ -17,7 +17,7 @@ namespace ServiceModel.Composition
     public abstract class ServiceCompositionHostFactoryBase : ServiceHostFactory
     {
         /// <summary>
-        /// Creates a <see cref="ServiceCompositionHost"/> extension of <see cref="T:System.ServiceModel.ServiceHost" /> for a specified type of service with a specific base address.
+        /// Creates a <see cref="ServiceHostWithDescriptionsConfiguration"/> extension of <see cref="T:System.ServiceModel.ServiceHost" /> for a specified type of service with a specific base address.
         /// </summary>
         /// <param name="serviceType">Specifies the type of service to host.</param>
         /// <param name="baseAddresses">The <see cref="T:System.Array" /> of type <see cref="T:System.Uri" /> that contains the base addresses for the service hosted.</param>
@@ -32,7 +32,8 @@ namespace ServiceModel.Composition
             if (container == null)
                 throw new InvalidOperationException();
 
-            var serviceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
+            var descriptionsConfigurator = new CompositionConfigurator(container);
+            var serviceHost = new ServiceHostWithDescriptionsConfiguration(descriptionsConfigurator, serviceType, baseAddresses);
             Configure(serviceHost, container);
             return serviceHost;
         }

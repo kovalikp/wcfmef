@@ -16,7 +16,7 @@ namespace ServiceModel.Composition
    {
        CompositionContainer _container;
        string _compositionContractName;
-       List<ServiceCompositionHost> _serviceHosts;
+       List<ServiceHostWithDescriptionsConfiguration> _serviceHosts;
        
        public SelfHostingContainer(CompositionContainer container)
            :this(container, null)
@@ -30,7 +30,7 @@ namespace ServiceModel.Composition
            _compositionContractName = compositionContractName;
        }
 
-       public IReadOnlyCollection<ServiceCompositionHost> ServiceHosts
+       public IReadOnlyCollection<ServiceHostWithDescriptionsConfiguration> ServiceHosts
        {
            get
            {
@@ -46,14 +46,16 @@ namespace ServiceModel.Composition
        {
            var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
            var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
-           var serviceHosts = new List<ServiceCompositionHost>();
+           var serviceHosts = new List<ServiceHostWithDescriptionsConfiguration>();
+
+           var serviceConfigurator = new CompositionConfigurator(_container);
 
            foreach (var export in exports)
            {
                foreach (var serviceType in export.Metadata.View.SelectMany(x => x.ServiceTypes))
                {
                    var baseAddresses = export.Value.GetBaseAddresses(serviceType);
-                   var serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
+                   var serviceHost = new ServiceHostWithDescriptionsConfiguration(serviceConfigurator, serviceType, baseAddresses);
                    configurations.ConfigureServiceHost(serviceHost);
                    serviceHosts.Add(serviceHost);
                }
@@ -61,7 +63,7 @@ namespace ServiceModel.Composition
            _serviceHosts = serviceHosts;
        }
 
-       private IEnumerable<ServiceCompositionHost> OpenableServiceHosts
+       private IEnumerable<ServiceHostWithDescriptionsConfiguration> OpenableServiceHosts
        {
            get
            {
@@ -69,7 +71,7 @@ namespace ServiceModel.Composition
            }
        }
 
-       private IEnumerable<ServiceCompositionHost> ClosableServiceHosts
+       private IEnumerable<ServiceHostWithDescriptionsConfiguration> ClosableServiceHosts
        {
            get
            {
