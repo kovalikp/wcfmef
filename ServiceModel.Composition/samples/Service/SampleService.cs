@@ -13,7 +13,7 @@ namespace Service
     [ExportService]
     //[ExportContract(typeof(ISampleService))]
     //[ExportContract()]
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SampleService : ISampleService
     {
         ILogger _logger;
