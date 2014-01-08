@@ -1,16 +1,12 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Dispatcher;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ServiceModel;
+    using System.ServiceModel.Channels;
+    using System.ServiceModel.Dispatcher;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Manages composition of service instances.
     /// </summary>
@@ -71,10 +67,19 @@ namespace ServiceModel.Composition
         /// <param name="instance">The service object to be recycled.</param>
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
-            var disposable = instance as IDisposable;
-
-            if (disposable != null)
-                disposable.Dispose();
+            var extension = instanceContext.Extensions.Find<CompositionInstanceContextExtension>();
+            if (extension != null)
+            {
+                extension.DisposeInstanceContextContainer();
+            }
+            else
+            {
+                var disposable = instance as IDisposable;
+                if (disposable != null)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
     }
 }

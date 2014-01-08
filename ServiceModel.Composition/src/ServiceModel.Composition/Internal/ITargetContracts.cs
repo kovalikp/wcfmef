@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition.Internal
+﻿namespace ServiceModel.Composition.Internal
 {
+    using System;
+
     /// <summary>
     /// Metadata information for <see cref="ExportContractBehaviorAttribute"/>.
     /// </summary>
     internal interface ITargetContracts : IContractTypeIdentity
     {
-        Type[] ContractTypes { get; }
+        Type ServiceContractType { get; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Used by Meta class in exprepression tree.")]
     internal class TargetContracts : ITargetContracts
     {
-
-        public Type[] ContractTypes { get; set; }
+        public Type ServiceContractType { get; set; }
 
         public string ContractTypeIdentity { get; set; }
     }

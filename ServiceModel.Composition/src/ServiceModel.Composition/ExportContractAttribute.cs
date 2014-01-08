@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
-using System.ServiceModel.Dispatcher;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ServiceModel.Channels;
+    using System.ServiceModel.Description;
+    using System.ServiceModel.Dispatcher;
 
     /// <summary>
     /// Specifies that marked service provides an export for target contract type.
@@ -46,7 +40,6 @@ namespace ServiceModel.Composition
         public ExportContractAttribute(string contractName)
             : this(contractName, null)
         {
-
         }
 
         /// <summary>
@@ -58,10 +51,19 @@ namespace ServiceModel.Composition
         public ExportContractAttribute(string contractName, Type contractType)
             : base(contractName, contractType)
         {
-
         }
 
-        internal CompositionContainer Container { get; set; }
+        /// <summary>
+        /// Gets the type of the contract to which the contract behavior is applicable.
+        /// </summary>
+        /// <value>The contract to which the contract behavior is applicable.</value>
+        public Type TargetContract
+        {
+            get
+            {
+                return ContractType;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether use filtered composition container catalog to enable 
@@ -71,33 +73,27 @@ namespace ServiceModel.Composition
         /// <c>true</c> if use per service instancing behavior; otherwise, <c>false</c>.
         /// </value>
         public bool UsePerServiceInstancing { get; set; }
+        
+        internal CompositionContainer Container { get; set; }
 
         /// <summary>
-        /// Gets the type of the contract to which the contract behavior is applicable.
-        /// </summary>
-        /// <returns>The contract to which the contract behavior is applicable.</returns>
-        public Type TargetContract { get { return ContractType; } }
-
-        /// <summary>
-        /// //pass
+        /// This interface method implementation does not do anything.
         /// </summary>
         /// <param name="contractDescription">The contract description to modify.</param>
         /// <param name="endpoint">The endpoint to modify.</param>
         /// <param name="bindingParameters">The objects that binding elements require to support the behavior.</param>
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
-
         }
 
         /// <summary>
-        /// //pass
+        /// This interface method implementation does not do anything.
         /// </summary>
         /// <param name="contractDescription">The contract description for which the extension is intended.</param>
         /// <param name="endpoint">The endpoint.</param>
         /// <param name="clientRuntime">The client runtime.</param>
         public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
-
         }
 
         /// <summary>
@@ -113,13 +109,12 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// //pass
+        /// This interface method implementation does not do anything.
         /// </summary>
         /// <param name="contractDescription">The contract to validate.</param>
         /// <param name="endpoint">The endpoint to validate.</param>
         public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint)
         {
-
         }
     }
 }

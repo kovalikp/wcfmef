@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ComponentModel.Composition.Primitives;
+    using System.Threading;
+
     /// <summary>
-    /// Provides shared (static) thread safe composition contanier.
+    /// Provides shared (static) thread safe composition container.
     /// Catalog loads parts from application directory and private binaries path.
     /// </summary>
     public class DirectoryCatalogSharedContainerFactory : ServiceCompositionHostFactoryBase
@@ -22,20 +19,8 @@ namespace ServiceModel.Composition
         private static object _containerLock = new object();
 
         /// <summary>
-        /// Creates <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer" />
-        /// with aggregate parts catalog of directory catalogs. 
-        /// Probes <see cref="System.AppDomainSetup.ApplicationBase"/> and <see cref="System.AppDomainSetup.PrivateBinPath"/>
-        /// of <see cref="System.AppDomain.CurrentDomain"/>.
-        /// </summary>
-        /// <returns>Composition container.</returns>
-        protected override CompositionContainer GetContainer()
-        {
-            return SharedContainer;
-        }
-
-        /// <summary>
-        /// Get shared (static) <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer" />
-        /// with aggregate parts catalog of directory catalogs. 
+        /// Gets shared (static) <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer" />
+        /// with aggregate parts catalog of directory catalogs.
         /// Probes <see cref="System.AppDomainSetup.ApplicationBase"/> and <see cref="System.AppDomainSetup.PrivateBinPath"/>
         /// of <see cref="System.AppDomain.CurrentDomain"/>.
         /// </summary>
@@ -46,26 +31,72 @@ namespace ServiceModel.Composition
         {
             get
             {
-                return LazyInitializer.EnsureInitialized(ref _container, ref _containerInitialized, ref _containerLock, CreateContainer);    
+                return LazyInitializer.EnsureInitialized(ref _container, ref _containerInitialized, ref _containerLock, ContainerFactory);
             }
         }
 
-        private static CompositionContainer CreateContainer()
+        /// <summary>
+        /// Creates <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer" />
+        /// with aggregate parts catalog of directory catalogs.
+        /// Probes <see cref="System.AppDomainSetup.ApplicationBase"/> and <see cref="System.AppDomainSetup.PrivateBinPath"/>
+        /// of <see cref="System.AppDomain.CurrentDomain"/>.
+        /// </summary>
+        /// <returns>Composition container.</returns>
+        protected override CompositionContainer CreateContainer()
+        {
+            return SharedContainer;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        private static CompositionContainer ContainerFactory()
+        {
+            AggregateCatalog catalog = null;
+            AggregateCatalog tmpCatalog = null;
+            CompositionContainer container = null;
+            try
+            {
+                tmpCatalog = CreateCatalog();
+                container = new CompositionContainer(catalog, true);
+                catalog = tmpCatalog;
+                tmpCatalog = null;
+            }
+            finally
+            {
+                if (tmpCatalog != null)
+                {
+                    tmpCatalog.Dispose();
+                }
+            }
+
+            return container;
+        }
+
+        private static AggregateCatalog CreateCatalog()
         {
             var catalogs = new List<ComposablePartCatalog>();
             var setup = AppDomain.CurrentDomain.SetupInformation;
 
-            if (setup != null)
+            try
             {
-                catalogs.Add(new DirectoryCatalog(setup.ApplicationBase));
+                if (setup != null)
+                {
+                    catalogs.Add(new DirectoryCatalog(setup.ApplicationBase));
 
-                if (!string.IsNullOrEmpty(setup.PrivateBinPath))
-                    catalogs.Add(new DirectoryCatalog(setup.PrivateBinPath));
+                    if (!string.IsNullOrEmpty(setup.PrivateBinPath))
+                    {
+                        catalogs.Add(new DirectoryCatalog(setup.PrivateBinPath));
+                    }
+                }
+            }
+            finally
+            {
+                foreach (var x in catalogs)
+                {
+                    x.Dispose();
+                }
             }
 
-            var catalog = new AggregateCatalog(catalogs);
-
-            return new CompositionContainer(catalog, true);
+            return new AggregateCatalog(catalogs);
         }
     }
 }

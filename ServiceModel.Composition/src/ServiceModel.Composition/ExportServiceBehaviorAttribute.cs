@@ -1,14 +1,10 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition;
+    using System.ServiceModel.Description;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Exports implementation of <see cref="System.ServiceModel.Description.IServiceBehavior"/> for composition.
     /// </summary>
@@ -27,27 +23,25 @@ namespace ServiceModel.Composition
         public ExportServiceBehaviorAttribute()
             : this(null)
         {
-
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportServiceBehaviorAttribute"/> class
         /// exporting the marked type for target service types.
         /// </summary>
-        /// <param name="serviceTypes">The service types.</param>
-        public ExportServiceBehaviorAttribute(Type[] serviceTypes)
+        /// <param name="serviceType">The service types.</param>
+        public ExportServiceBehaviorAttribute(Type serviceType)
             : base(null, typeof(IServiceBehavior))
         {
-            ServiceTypes = serviceTypes;
+            ServiceType = serviceType;
         }
 
         /// <summary>
-        /// Gets the service types that behaviour should be attached to.
+        /// Gets the service types that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The service types.
         /// </value>
-        public Type[] ServiceTypes { get; private set; }
+        public Type ServiceType { get; private set; }
     }
-
 }

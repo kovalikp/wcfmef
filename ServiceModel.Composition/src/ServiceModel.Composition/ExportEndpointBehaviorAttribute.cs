@@ -1,14 +1,10 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition;
+    using System.ServiceModel.Description;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Exports implementation of <see cref="System.ServiceModel.Description.IEndpointBehavior" /> for composition.
     /// </summary>
@@ -30,45 +26,32 @@ namespace ServiceModel.Composition
         /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
         /// exporting the marked type for any endpoint of any service type.
         /// </summary>
-        public ExportEndpointBehaviorAttribute()
-            : this(serviceTypes: null, endpointNames: null) { }
+        public ExportEndpointBehaviorAttribute() 
+            : this(null) 
+        { 
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
         /// exporting the marked type for any endpoint of specified service types.
         /// </summary>
-        /// <param name="serviceTypes">The service types.</param>
-        public ExportEndpointBehaviorAttribute(params Type[] serviceTypes)
-            : this(serviceTypes, null) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
-        /// exporting the marked type for specified endpoints of specified service type.
-        /// </summary>
-        /// <param name="serviceType">Type of the service.</param>
-        /// <param name="endpointNames">The endpoint names.</param>
-        public ExportEndpointBehaviorAttribute(Type serviceType, params string[] endpointNames)
-            : this(new[] { serviceType }, endpointNames)
-        {
-        }
-
-        private ExportEndpointBehaviorAttribute(Type[] serviceTypes, string[] endpointNames)
+        /// <param name="serviceType">The service types.</param>
+        public ExportEndpointBehaviorAttribute(Type serviceType)
             : base(null, typeof(IEndpointBehavior))
         {
-            ServiceTypes = serviceTypes;
-            EndpointNames = endpointNames;
+            ServiceType = serviceType;
         }
 
         /// <summary>
-        /// Gets the service types that behaviour should be attached to.
+        /// Gets the service types that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The service types.
         /// </value>
-        public Type[] ServiceTypes { get; private set; }
+        public Type ServiceType { get; private set; }
 
         /// <summary>
-        /// Gets or sets the endpoint names that behaviour should be attached to.
+        /// Gets or sets the endpoint names that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The endpoint names.
@@ -76,7 +59,7 @@ namespace ServiceModel.Composition
         public string[] EndpointNames { get; set; }
 
         /// <summary>
-        /// Gets or sets the binding names that behaviour should be attached to.
+        /// Gets or sets the binding names that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The binding names.
@@ -84,7 +67,7 @@ namespace ServiceModel.Composition
         public string[] BindingNames { get; set; }
 
         /// <summary>
-        /// Gets or sets the binding types that behaviour should be attached to.
+        /// Gets or sets the binding types that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The binding types.
@@ -92,7 +75,7 @@ namespace ServiceModel.Composition
         public Type[] BindingTypes { get; set; }
 
         /// <summary>
-        /// Gets or sets the service contract names that behaviour should be attached to.
+        /// Gets or sets the service contract names that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The contract names.
@@ -100,7 +83,7 @@ namespace ServiceModel.Composition
         public string[] ContractNames { get; set; }
 
         /// <summary>
-        /// Gets or sets the service contract types that behaviour should be attached to.
+        /// Gets or sets the service contract types that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The contract types.

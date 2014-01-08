@@ -1,16 +1,14 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel.Composition.Hosting;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.ServiceModel.Description;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Provides a composition host for services.
     /// </summary>
@@ -37,20 +35,20 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// Applies exported service, contracts, endpoints and operations behaviors. 
+        /// Applies exported service, contracts, endpoints and operations behaviors.
         /// If service has neither <see cref="ExportServiceAttribute"/> or <see cref="ExportContractAttribute"/>,
         /// it will attach new <see cref="ExportServiceAttribute"/>.
         /// </summary>
         protected override void OnOpening()
         {
             base.OnOpening();
-            ApplyServiceBehaviors(_container);
+            ApplyServiceBehaviors();
 
-            ApplyContractBehaviors(_container);
+            ApplyContractBehaviors();
 
-            ApplyEndpointBehaviors(_container);
+            ApplyEndpointBehaviors();
 
-            ApplyOperationBehaviors(_container);
+            ApplyOperationBehaviors();
 
             ServiceBehaviorAttribute serviceBehavior = Description.Behaviors.Find<ServiceBehaviorAttribute>();
             if (serviceBehavior != null && serviceBehavior.InstanceContextMode == InstanceContextMode.Single)
@@ -60,7 +58,7 @@ namespace ServiceModel.Composition
             }
             else
             {
-                ApplyExportBehavior(_container);
+                ApplyExportBehavior();
             }
         }
 
@@ -72,68 +70,80 @@ namespace ServiceModel.Composition
             }
         }
 
-        private void ApplyExportBehavior(CompositionContainer container)
+        private void ApplyExportBehavior()
         {
             var exportServices = Description.Behaviors.FindAll<ExportServiceAttribute>();
-            var exportContracts = Description.Endpoints.SelectMany(x => YieldExportServiceAttribute(x.Contract.ContractBehaviors)).ToList();
+            var exportContracts = Description.Endpoints.SelectMany(x => YieldExportServiceAttribute(x.Contract.Behaviors)).ToList();
 
             foreach (var exportContract in exportContracts)
             {
                 if (exportContract.Container == null)
+                {
                     exportContract.Container = _container;
+                }
             }
 
             foreach (var exportService in exportServices)
             {
                 if (exportService.Container == null)
+                {
                     exportService.Container = _container;
+                }
             }
 
             if (exportServices.Count + exportContracts.Count == 0)
+            {
                 Description.Behaviors.Add(new ExportServiceAttribute(_container, null));
+            }
         }
 
-        private void ApplyServiceBehaviors(CompositionContainer container)
+        private void ApplyServiceBehaviors()
         {
-            var behaviorExports = container.GetExports<IServiceBehavior, Meta<TargetServices>>();
+            var behaviorExports = _container.GetExports<IServiceBehavior, Meta<TargetServices>>();
 
             foreach (var behavior in behaviorExports)
             {
                 if (behavior.Metadata.MatchesExport(Description))
+                {
                     Description.Behaviors.Add(behavior.Value);
+                }
             }
         }
 
-        private void ApplyEndpointBehaviors(CompositionContainer container)
+        private void ApplyEndpointBehaviors()
         {
-            var behaviorExports = container.GetExports<IEndpointBehavior, Meta<TargetEndpoints>>();
+            var behaviorExports = _container.GetExports<IEndpointBehavior, Meta<TargetEndpoints>>();
             foreach (var endpoint in this.Description.Endpoints)
             {
                 foreach (var behavior in behaviorExports)
                 {
                     if (behavior.Metadata.MatchesExport(Description, endpoint))
-                        endpoint.EndpointBehaviors.Add(behavior.Value);
+                    {
+                        endpoint.Behaviors.Add(behavior.Value);
+                    }
                 }
             }
         }
 
-        private void ApplyContractBehaviors(CompositionContainer container)
+        private void ApplyContractBehaviors()
         {
-            var behaviorExports = container.GetExports<IContractBehavior, Meta<TargetContracts>>();
+            var behaviorExports = _container.GetExports<IContractBehavior, Meta<TargetContracts>>();
 
             foreach (var behavior in behaviorExports)
             {
                 foreach (var contractDescription in ImplementedContracts.Values)
                 {
                     if (behavior.Metadata.MatchesExport(contractDescription))
+                    {
                         contractDescription.Behaviors.Add(behavior.Value);
+                    }
                 }
             }
         }
 
-        private void ApplyOperationBehaviors(CompositionContainer container)
+        private void ApplyOperationBehaviors()
         {
-            var behaviorExports = container.GetExports<IOperationBehavior, Meta<TargetOperations>>();
+            var behaviorExports = _container.GetExports<IOperationBehavior, Meta<TargetOperations>>();
 
             foreach (var behavior in behaviorExports)
             {
@@ -142,7 +152,9 @@ namespace ServiceModel.Composition
                     foreach (var operationDescription in contractDescription.Operations)
                     {
                         if (behavior.Metadata.MatchesExport(contractDescription, operationDescription))
-                            operationDescription.OperationBehaviors.Add(behavior.Value);
+                        {
+                            operationDescription.Behaviors.Add(behavior.Value);
+                        }
                     }
                 }
             }

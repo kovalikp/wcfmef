@@ -1,14 +1,10 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition;
+    using System.ServiceModel.Description;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Exports implementation of <see cref="System.ServiceModel.Description.IContractBehavior"/> for composition.
     /// </summary>
@@ -27,26 +23,25 @@ namespace ServiceModel.Composition
         public ExportContractBehaviorAttribute()
             : this(null)
         {
-
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportContractBehaviorAttribute"/> class 
-        /// exporting the marked type for spedified service contract types.
+        /// exporting the marked type for specified service contract types.
         /// </summary>
-        /// <param name="contractTypes">The service contract types.</param>
-        public ExportContractBehaviorAttribute(params Type[] contractTypes)
+        /// <param name="serviceContractType">The service contract types.</param>
+        public ExportContractBehaviorAttribute(Type serviceContractType)
             : base(null, typeof(IContractBehavior))
         {
-            ContractTypes = contractTypes;
+            ServiceContractType = serviceContractType;
         }
 
         /// <summary>
-        /// Gets the contract types that behaviour should be attached to.
+        /// Gets the contract types that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The contract types.
         /// </value>
-        public Type[] ContractTypes { get; private set; }
+        public Type ServiceContractType { get; private set; }
     }
 }

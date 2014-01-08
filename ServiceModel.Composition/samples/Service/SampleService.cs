@@ -1,26 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
-using ServiceModel.Composition;
-using System.ComponentModel.Composition;
-
-namespace Service
+﻿namespace Service
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Service1" in both code and config file together.
-    [ExportService]
-    //[ExportContract(typeof(ISampleService))]
-    //[ExportContract()]
+    using ServiceModel.Composition;
+    using System.ComponentModel.Composition;
+    using System.ServiceModel;
+
+    [ExportService(UsePerServiceInstancing = true)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SampleService : ISampleService
     {
-        ILogger _logger;
+        private ILogger _logger;
 
-        static int _serviceCounter = 0;
+        private static int _serviceCounter = 0;
 
-        int _serviceId;
+        private int _serviceId;
 
         public SampleService()
         {
@@ -29,11 +21,11 @@ namespace Service
         }
 
         [ImportingConstructor]
-        public SampleService(ILogger logger) : this()
+        public SampleService(ILogger logger)
+            : this()
         {
             _logger = logger;
         }
-
 
         public PingResponse Ping(PingRequest pingRequest)
         {

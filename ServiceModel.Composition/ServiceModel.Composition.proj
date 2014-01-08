@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Clean;Test;Package" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <PropertyGroup>
+   <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+   <Platform>AnyCPU</Platform>
+   <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildThisFileDirectory)</SolutionDir>
+   <BuildProperties>Platform=$(Platform);SolutionDir=$(SolutionDir)</BuildProperties>
+   <BuildProperties Condition="'$(InternalsInvisible)' != ''">$(BuildProperties);InternalsInvisible=$(InternalsInvisible)</BuildProperties>
+   <BuildProperties Condition="'$(RunCodeAnalysis)' != ''">$(BuildProperties);RunCodeAnalysis=$(RunCodeAnalysis)</BuildProperties>
+   <BuildProperties Condition="'$(StyleCopEnabled)' != ''">$(BuildProperties);StyleCopEnabled=$(StyleCopEnabled)</BuildProperties>
+ </PropertyGroup>
+
+ <ItemGroup>
+   <ProjectToBuild Include="src\ServiceModel.Composition\ServiceModel.Composition.csproj" />
+ </ItemGroup>
+ 
+ <ItemGroup>
+   <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
+     <RestorePackages>true</RestorePackages>
+   </NonCoreProjectToBuild>-->
+ </ItemGroup>
+ 
+ <ItemGroup>
+   <ProjectToBuild Include="@(NonCoreProjectToBuild)" Condition="'$(BuildCoreOnly)' != 'true'" />
+ </ItemGroup>
+
+ <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props" />
+ <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+
+ <Target Name="Clean">
+   <MSBuild Targets="Clean"
+            Projects="@(ProjectToBuild)"
+            Properties="Configuration=%(BuildConfiguration.Identity);$(BuildProperties)"
+            BuildInParallel="true" />
+   <MSBuild Targets="Clean"
+            Projects="src\NuGet\NuGet.proj"
+            Properties="Configuration=$(Configuration)"
+            Condition="'$(Configuration)' == '$(Configuration45)'" />
+ </Target>
+
+ <Target Name="RestorePackages">
+   <PropertyGroup>
+     <RequireRestoreConsent>false</RequireRestoreConsent>
+   </PropertyGroup>
+   <Message Text="Restoring NuGet packages..." Importance="High" />
+   <MSBuild Projects="@(ProjectToBuild->WithMetadataValue('RestorePackages', 'true'))" Targets="RestorePackages" Properties="RequireRestoreConsent=$(RequireRestoreConsent)" />
+ </Target>
+
+ <Target Name="RestoreSolutionPackages" DependsOnTargets="CheckPrerequisites" AfterTargets="RestorePackages">
+   <PropertyGroup>
+     <PackagesConfig>$([System.IO.Path]::Combine($(NuGetToolsPath), "packages.config"))</PackagesConfig>
+     <SolutionRequireConsentSwitch Condition=" $(RequireRestoreConsent) == 'true' ">-RequireConsent</SolutionRequireConsentSwitch>
+     <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(SolutionRequireConsentSwitch) -solutionDir "$(SolutionDir) "</RestoreCommand>
+   </PropertyGroup>
+   <Exec Command="$(RestoreCommand)"
+         LogStandardErrorAsError="true" />
+ </Target>
+
+ <Target Name="Build" DependsOnTargets="RestoreSolutionPackages">
+   <MSBuild Targets="Build"
+            Projects="@(ProjectToBuild)"
+            Properties="Configuration=%(BuildConfiguration.Identity);$(BuildProperties)"
+            BuildInParallel="true" />
+ </Target>
+
+ <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+ <Target Name="CheckSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
+   <MSBuild Targets="CheckSkipStrongNames"
+            Projects="tools\SkipStrongNames.targets" />
+ </Target>
+
+ <Target Name="EnableSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
+   <MSBuild Targets="EnableSkipStrongNames"
+            Projects="tools\SkipStrongNames.targets" />
+ </Target>
+
+ <Target Name="DisableSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
+   <MSBuild Targets="DisableSkipStrongNames"
+            Projects="tools\SkipStrongNames.targets" />
+ </Target>
+
+ <Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
+   <!--<MSBuild Projects="tools\xUnit.targets"
+            Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
+ </Target>
+
+ <Target Name="Package">
+   <MSBuild Targets="Rebuild"
+            Projects="$(MSBuildThisFileFullPath)"
+            Properties="Configuration=$(Configuration);$(BuildProperties);BuildCoreOnly=true;InternalsInvisible=true;RunCodeAnalysis=false;StyleCopEnabled=false" />
+   <MSBuild Targets="Build"
+            Projects="src\NuGet\NuGet.proj"
+            Properties="Configuration=$(Configuration)"
+            Condition="'$(Configuration)' == '$(Configuration45)'" />
+ </Target>
+
+ <Target Name="CodeCoverage" DependsOnTargets="RestoreSolutionPackages;Build">
+   <!--<MSBuild Projects="tools\OpenCover.targets"
+            Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
+ </Target>
+</Project>

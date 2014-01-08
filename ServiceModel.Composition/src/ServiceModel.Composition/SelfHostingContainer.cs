@@ -1,225 +1,201 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Configuration;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Configuration;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
-   public class SelfHostingContainer : IDisposable
-   {
-       CompositionContainer _container;
-       string _compositionContractName;
-       List<ServiceCompositionHost> _serviceHosts;
-       
-       public SelfHostingContainer(CompositionContainer container)
-           :this(container, null)
-       {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition.Hosting;
+    using System.Linq;
+    using System.ServiceModel;
+    using ServiceModel.Composition.Internal;
 
-       }
-       
-       public SelfHostingContainer(CompositionContainer container, string compositionContractName)
-       {
-           _container = container;
-           _compositionContractName = compositionContractName;
-       }
+    /// <summary>
+    /// TODO: Documentation.
+    /// </summary>
+    public partial class SelfHostingContainer
+    {
+        private CompositionContainer _container;
+        private string _compositionContractName;
+        private List<ServiceCompositionHost> _serviceHosts;
 
-       public IReadOnlyCollection<ServiceCompositionHost> ServiceHosts
-       {
-           get
-           {
-               if (_serviceHosts == null)
-               {
-                   Initialize();
-               }
-               return _serviceHosts;
-           }
-       }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelfHostingContainer"/> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        public SelfHostingContainer(CompositionContainer container)
+            : this(container, null)
+        {
+        }
 
-       private void Initialize()
-       {
-           var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
-           var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
-           var serviceHosts = new List<ServiceCompositionHost>();
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelfHostingContainer"/> class.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="compositionContractName">Name of the composition contract.</param>
+        public SelfHostingContainer(CompositionContainer container, string compositionContractName)
+        {
+            _container = container;
+            _compositionContractName = compositionContractName;
+        }
 
-           foreach (var export in exports)
-           {
-               foreach (var serviceType in export.Metadata.View.SelectMany(x => x.ServiceTypes))
-               {
-                   var baseAddresses = export.Value.GetBaseAddresses(serviceType);
-                   var serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
-                   configurations.ConfigureServiceHost(serviceHost);
-                   serviceHosts.Add(serviceHost);
-               }
-           }
-           _serviceHosts = serviceHosts;
-       }
+        private IEnumerable<ServiceCompositionHost> OpenableServiceHosts
+        {
+            get
+            {
+                return ServiceHosts.Where(x => x.State == CommunicationState.Created);
+            }
+        }
 
-       private IEnumerable<ServiceCompositionHost> OpenableServiceHosts
-       {
-           get
-           {
-               return ServiceHosts.Where(x => x.State == CommunicationState.Created);
-           }
-       }
+        private IEnumerable<ServiceCompositionHost> ClosableServiceHosts
+        {
+            get
+            {
+                return ServiceHosts.Where(x => x.State == CommunicationState.Opening || x.State == CommunicationState.Opened);
+            }
+        }
 
-       private IEnumerable<ServiceCompositionHost> ClosableServiceHosts
-       {
-           get
-           {
-               return ServiceHosts.Where(x => x.State == CommunicationState.Opening || x.State == CommunicationState.Opened);
-           }
-       }
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
+        public void Open()
+        {
+            foreach (var serviceHost in OpenableServiceHosts)
+            {
+                serviceHost.Open();
+            }
+        }
 
-       public void Open()
-       {
-           foreach (var serviceHost in OpenableServiceHosts)
-           {
-               serviceHost.Open();
-           }
-       }
+        /// <summary>
+        /// Opens the specified timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        public void Open(TimeSpan timeout)
+        {
+            foreach (var serviceHost in OpenableServiceHosts)
+            {
+                serviceHost.Open(timeout);
+            }
+        }
 
-       public void Open(TimeSpan timeout)
-       {
-           foreach (var serviceHost in OpenableServiceHosts)
-           {
-               serviceHost.Open(timeout);
-           }
-       }
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
+        /// <exception cref="System.AggregateException">
+        /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Close"/>
+        /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
+        /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        public void Close()
+        {
+            List<Exception> exceptions = new List<Exception>();
+            foreach (var serviceHost in ClosableServiceHosts)
+            {
+                try
+                {
+                    serviceHost.Close();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
 
-       public async Task OpenAsync()
-       {
-           var serviceHosts = _serviceHosts.Where(x => x.State == CommunicationState.Created);
-           var tasks = new List<Task>();
-           foreach (var serviceHost in OpenableServiceHosts)
-           {
-               var task = Task.Factory.FromAsync(serviceHost.BeginOpen, serviceHost.EndOpen, new { });
-               tasks.Add(task);
-           }
-           await Task.WhenAll(tasks);
-       }
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
 
-       public async Task OpenAsync(TimeSpan timeout)
-       {
-           var tasks = new List<Task>();
-           foreach (var serviceHost in _serviceHosts)
-           {
-               var task = Task.Factory.FromAsync(serviceHost.BeginOpen, serviceHost.EndOpen, timeout, new { });
-               tasks.Add(task);
-           }
-           await Task.WhenAll(tasks);
-       }
+        /// <summary>
+        /// Closes the specified timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <exception cref="System.AggregateException">
+        /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Close(System.TimeSpan)"/>
+        /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
+        /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        public void Close(TimeSpan timeout)
+        {
+            List<Exception> exceptions = new List<Exception>();
+            foreach (var serviceHost in ClosableServiceHosts)
+            {
+                try
+                {
+                    serviceHost.Close(timeout);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
 
-       public void Close()
-       {
-           List<Exception> exceptions = new List<Exception>();
-           foreach (var serviceHost in ClosableServiceHosts)
-           {
-               try
-               {
-                   serviceHost.Close();
-               }
-               catch (Exception ex)
-               {
-                   exceptions.Add(ex);
-               }
-           }
-           if (exceptions.Count > 0)
-           {
-               throw new AggregateException(exceptions);
-           }
-       }
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
 
-       public void Close(TimeSpan timeout)
-       {
-           List<Exception> exceptions = new List<Exception>();
-           foreach (var serviceHost in ClosableServiceHosts)
-           {
-               try
-               {
-                   serviceHost.Close(timeout);
-               }
-               catch (Exception ex)
-               {
-                   exceptions.Add(ex);
-               }
-           }
-           if (exceptions.Count > 0)
-           {
-               throw new AggregateException(exceptions);
-           }
-       }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        private void Initialize()
+        {
+            var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
+            var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
+            var serviceHosts = new List<ServiceCompositionHost>();
 
-       public async Task CloseAsync()
-       {
-           var tasks = new List<Task>();
-           foreach (var serviceHost in ClosableServiceHosts)
-           {
-               var task = Task.Factory.FromAsync(serviceHost.BeginClose, serviceHost.EndClose, new { });
-               tasks.Add(task);
-           }
-           await Task.WhenAll(tasks);
-       }
+            foreach (var export in exports)
+            {
+                foreach (var serviceType in export.Metadata.View.Select(x => x.ServiceType))
+                {
+                    var baseAddresses = export.Value.GetBaseAddresses(serviceType);
+                    var serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
+                    configurations.ConfigureServiceHost(serviceHost);
+                    serviceHosts.Add(serviceHost);
+                }
+            }
 
-       public async Task CloseAsync(TimeSpan timeout)
-       {
-           var tasks = new List<Task>();
-           foreach (var serviceHost in OpenableServiceHosts)
-           {
-               var task = Task.Factory.FromAsync(serviceHost.BeginClose, serviceHost.EndClose, timeout, new { });
-               tasks.Add(task);
-           }
-           await Task.WhenAll(tasks);
-       }
+            _serviceHosts = serviceHosts;
+        }
+    }
 
-       #region IDisposable Members
+    /// <content>
+    /// IDisposable implementation.
+    /// </content>
+    public partial class SelfHostingContainer : IDisposable
+    {
+        private bool _disposed;
 
-       private bool _disposed;
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or
+        /// resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-       /// <summary>
-       /// Performs application-defined tasks associated with freeing, releasing, or
-       /// resetting unmanaged resources.
-       /// </summary>
-       public void Dispose()
-       {
-           Dispose(true);
-           GC.SuppressFinalize(this);
-       }
+        /// <summary>
+        /// Disposes the object.
+        /// </summary>
+        /// <param name="disposing">If <code>false</code>, cleans up native resources.
+        /// If <code>true</code> cleans up both managed and native resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed == false)
+            {
+                if (disposing)
+                {
+                    foreach (var serviceHost in _serviceHosts)
+                    {
+                        var disposable = serviceHost as IDisposable;
+                        if (disposable != null)
+                        {
+                            disposable.Dispose();
+                        }
+                    }
+                }
 
-       /// <summary>
-       /// Disposes the object.
-       /// </summary>
-       /// <param name="disposing">If <code>false</code>, cleans up native resources.
-       /// If <code>true</code> cleans up both managed and native resources</param>
-       protected virtual void Dispose(bool disposing)
-       {
-           if (_disposed == false)
-           {
-               // TODO: clean native resources        
-
-               if (disposing)
-               {
-                   foreach (var serviceHost in _serviceHosts)
-                   {
-                       var disposable = serviceHost as IDisposable;
-                       if (disposable != null)
-                           disposable.Dispose();
-                   }
-
-               }
-
-               _disposed = true;
-           }
-       }
-
-       #endregion
-                
-                
-   }
+                _disposed = true;
+            }
+        }
+    }
 }

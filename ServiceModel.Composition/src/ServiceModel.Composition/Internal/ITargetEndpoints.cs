@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition.Internal
+﻿namespace ServiceModel.Composition.Internal
 {
+    using System;
+
     /// <summary>
     /// Metadata information for <see cref="ExportEndpointBehaviorAttribute"/>.
     /// </summary>
     internal interface ITargetEndpoints : IContractTypeIdentity
     {
-        Type[] ServiceTypes { get; }
+        Type ServiceType { get; }
 
         string[] EndpointNames { get; }
 
@@ -24,9 +20,10 @@ namespace ServiceModel.Composition.Internal
         Type[] BindingTypes { get; }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Used by Meta class in exprepression tree.")]
     internal class TargetEndpoints : ITargetEndpoints
     {
-        public Type[] ServiceTypes { get; set; }
+        public Type ServiceType { get; set; }
 
         public string[] EndpointNames { get; set; }
 

@@ -1,0 +1,52 @@
+<!--
+****************************************************************************************************
+Project global pre-settings.
+**************************************************************************************************** -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(CustomBeforeEntityFrameworkTargets)" Condition="Exists('$(CustomBeforeEntityFrameworkTargets)')" Label="Pre-targets Build Extensibility Point."/>
+
+  <PropertyGroup>
+    <VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
+    <VersionMinor Condition="'$(VersionMinor)' == ''">1</VersionMinor>
+    <VersionBuild Condition="'$(VersionBuild)' == ''">0</VersionBuild>
+    <VersionRevision Condition="'$(VersionRevision)' == ''">0</VersionRevision>
+    <VersionRelease Condition="'$(VersionRelease)' == ''">0-alpha1</VersionRelease>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\</RepositoryRoot>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OutputPath Condition="'$(OutputPath)' == ''">$(RepositoryRoot)bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Configuration45>$([System.Text.RegularExpressions.Regex]::Replace('$(Configuration)', 'Net40', '', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</Configuration45>
+    <Configuration40>$(Configuration45)Net40</Configuration40>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<BuildConfiguration Include="$(Configuration40)" />-->
+    <BuildConfiguration Include="$(Configuration45)" Condition="'$(Configuration)' == '$(Configuration45)'" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputPath45>$([System.Text.RegularExpressions.Regex]::Replace('$(OutputPath)', 'Net40', '', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</OutputPath45>
+    <OutputPath40>$(OutputPath45.TrimEnd('\'))Net40\</OutputPath40>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration45)' == 'Debug'">
+    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">false</StyleCopEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <StyleCopTreatErrorsAsWarnings>true</StyleCopTreatErrorsAsWarnings>
+    <StyleCopOverrideSettingsFile>$(RepositoryRoot)src\Settings.StyleCop</StyleCopOverrideSettingsFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Use CustomAfterMicrosoftCommonTargets property (Microsoft.Common.targets) to inject project post-targets  -->
+    <!-- Note: this is how common properties are defined that must be set _after_ the properties in the .csproj files e.g. VS11 -->
+    <CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)ServiceModel.Composition.targets</CustomAfterMicrosoftCommonTargets>
+    <CustomAfterNuGetProjTargets>$(MSBuildThisFileDirectory)ServiceModel.Composition.targets</CustomAfterNuGetProjTargets>
+  </PropertyGroup>
+</Project>

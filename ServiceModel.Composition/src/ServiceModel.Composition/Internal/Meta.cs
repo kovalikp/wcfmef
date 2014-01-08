@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition.Internal
+﻿namespace ServiceModel.Composition.Internal
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+
     internal class Meta<T>
         where T : new()
     {
-        const string ExportTypeIdentity = System.ComponentModel.Composition.Hosting.CompositionConstants.ExportTypeIdentityMetadataName;
-        const string ContractTypeIdentity = "ContractTypeIdentity";
+        private const string ContractTypeIdentity = "ContractTypeIdentity";
+        private const string ExportTypeIdentity = System.ComponentModel.Composition.Hosting.CompositionConstants.ExportTypeIdentityMetadataName;
+        private static Func<Dictionary<string, object>, T> _processMetadataItem;
 
-        IEnumerable<T> _metadata;
-        IDictionary<string, object> _metadataDictionary;
+        private IEnumerable<T> _metadata;
+        private IDictionary<string, object> _metadataDictionary;
 
-        static Func<Dictionary<string, object>, T> _processMetadataItem;
+        public Meta(IDictionary<string, object> metadataDictionary)
+        {
+            _metadataDictionary = metadataDictionary;
+        }
 
         public IEnumerable<T> View
         {
@@ -26,13 +28,53 @@ namespace ServiceModel.Composition.Internal
                 {
                     ProcessMetadata();
                 }
+
                 return _metadata;
             }
         }
 
-        public Meta(IDictionary<string, object> metadataDictionary)
+        private static T ProcessMetadataItem(Dictionary<string, object> metadataItem)
         {
-            _metadataDictionary = metadataDictionary;
+            if (_processMetadataItem == null)
+            {
+                List<Expression> assignemns = new List<Expression>();
+
+                var instanceType = typeof(T);
+
+                var dictParameter = Expression.Parameter(typeof(Dictionary<string, object>), "dictionary");
+
+                // T instance;
+                var resultVariable = Expression.Variable(instanceType, "instance");
+
+                // A label expression of the <T> type that is the target for Expression.Return(target, value, type).
+                LabelTarget returnTarget = Expression.Label(instanceType);
+
+                // instance = new T()
+                assignemns.Add(Expression.Assign(resultVariable, Expression.New(instanceType)));
+                foreach (var item in metadataItem)
+                {
+                    var propertyInfo = instanceType.GetProperty(item.Key);
+
+                    // dictionary["Key"]
+                    var getValue = Expression.Call(dictParameter, dictParameter.Type.GetMethod("get_Item"), Expression.Constant(item.Key, typeof(string)));
+
+                    // instance.Key = (propertyType) dictionary["Key"];
+                    var assignment = Expression.Assign(
+                       Expression.Property(resultVariable, propertyInfo),
+                       Expression.Convert(getValue, propertyInfo.PropertyType));
+                    assignemns.Add(assignment);
+                }
+
+                // return instance;
+                assignemns.Add(Expression.Return(returnTarget, resultVariable, instanceType));
+                assignemns.Add(Expression.Label(returnTarget, resultVariable));
+                var block = Expression.Block(instanceType, new[] { resultVariable }, assignemns);
+
+                var lambdaExpresion = Expression.Lambda<Func<Dictionary<string, object>, T>>(block, dictParameter);
+                _processMetadataItem = lambdaExpresion.Compile();
+            }
+
+            return _processMetadataItem(metadataItem);
         }
 
         private void ProcessMetadata()
@@ -47,7 +89,6 @@ namespace ServiceModel.Composition.Internal
             }
             else
             {
-
                 var exportTypeIdentity = (string)_metadataDictionary[ExportTypeIdentity];
                 var conctractTypeIdentities = (string[])_metadataDictionary[ContractTypeIdentity];
 
@@ -68,48 +109,8 @@ namespace ServiceModel.Composition.Internal
                     }
                 }
             }
+
             _metadata = metadata;
-        }
-
-        private T ProcessMetadataItem(Dictionary<string, object> metadataItem)
-        {
-            if (_processMetadataItem == null)
-            {
-                List<Expression> assignemns = new List<Expression>();
-
-                var instanceType = typeof(T);
-
-                var dictParameter = Expression.Parameter(typeof(Dictionary<string, object>), "dictionary");
-                var instanceParameter = Expression.Parameter(instanceType);
-
-                // T instance;
-                var resultVariable = Expression.Variable(instanceType, "instance");
-
-                // A label expression of the <T> type that is the target for Expression.Return(target, value, type).
-                LabelTarget returnTarget = Expression.Label(instanceType);
-
-                // instance = new T()
-                assignemns.Add(Expression.Assign(resultVariable, Expression.New(instanceType)));
-                foreach (var item in metadataItem)
-                {
-                    var propertyInfo = instanceType.GetProperty(item.Key);
-                    // dictionary["Key"]
-                    var getValue = Expression.Call(dictParameter, dictParameter.Type.GetMethod("get_Item"), Expression.Constant(item.Key, typeof(string)));
-                    // instance.Key = (propertyType) dictionary["Key"];
-                    var assignment = Expression.Assign(
-                       Expression.Property(resultVariable, propertyInfo),
-                       Expression.Convert(getValue, propertyInfo.PropertyType));
-                    assignemns.Add(assignment);
-                }
-                // return instance;
-                assignemns.Add(Expression.Return(returnTarget, resultVariable, instanceType));
-                assignemns.Add(Expression.Label(returnTarget, resultVariable));
-                var block = Expression.Block(instanceType, new[] { resultVariable }, assignemns);
-
-                var lambdaExpresion = Expression.Lambda<Func<Dictionary<string, object>, T>>(block, dictParameter);
-                _processMetadataItem = lambdaExpresion.Compile();
-            }
-            return _processMetadataItem(metadataItem);
         }
     }
 }

@@ -1,13 +1,9 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Provides composition contract type identity metadata for exported type.
     /// </summary>
@@ -21,9 +17,13 @@ namespace ServiceModel.Composition
         /// <param name="contractName">The contract name that is used to export the type or member marked with this attribute, or null or an empty string ("") to use the default contract name.</param>
         /// <param name="contractType">The type to export.</param>
         protected ExportContractTypeIdentityAttribute(string contractName, Type contractType)
-            :base(contractName, contractType)
+            : base(contractName, contractType)
         {
-            if (contractType == null) throw new ArgumentNullException("contractType");
+            if (contractType == null)
+            {
+                throw new ArgumentNullException("contractType");
+            }
+
             _contractTypeIdentity = AttributedModelServices.GetTypeIdentity(contractType);
         }
 

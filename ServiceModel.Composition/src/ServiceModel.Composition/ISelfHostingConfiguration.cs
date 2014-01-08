@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+
     /// <summary>
     /// Implements method that can provide base addresses for <see cref="System.ServiceModel.ServiceHost" />.
-    /// Mark implementating class with <see cref="ExportSelfHostingConfigurationAttribute" />.
+    /// Mark implementing class with <see cref="ExportSelfHostingConfigurationAttribute" />.
     /// </summary>
     /// <remarks>
     /// Exported values are used by <see cref="SelfHostingContainer" />.

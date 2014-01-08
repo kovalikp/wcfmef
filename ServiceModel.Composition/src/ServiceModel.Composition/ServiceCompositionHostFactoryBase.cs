@@ -1,15 +1,12 @@
-﻿using ServiceModel.Composition.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.ComponentModel.Composition.Hosting;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.ServiceModel.Activation;
+    using ServiceModel.Composition.Internal;
+
     /// <summary>
     /// Extend <see cref="ServiceCompositionHostFactoryBase"/> to provide customized <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer"/>
     /// for service composition and configuration.
@@ -24,16 +21,37 @@ namespace ServiceModel.Composition
         /// <returns>
         /// A <see cref="T:System.ServiceModel.ServiceHost" /> for the type of service specified with a specific base address.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException"></exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// The <see cref="M:ServiceModel.Composition.ServiceCompositionHostFactoryBase.GetContainer"/> method returns <see langword="null" />.
+        /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
         {
-            var container = GetContainer();
-            
-            if (container == null)
-                throw new InvalidOperationException();
+            var container = CreateContainer();
 
-            var serviceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
-            Configure(serviceHost, container);
+            if (container == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            ServiceCompositionHost tmpServiceHost = null;
+            ServiceCompositionHost serviceHost = null;
+
+            try
+            {
+                tmpServiceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                Configure(serviceHost, container);
+                serviceHost = tmpServiceHost;
+                tmpServiceHost = null;
+            }
+            finally
+            {
+                if (tmpServiceHost != null)
+                {
+                    tmpServiceHost.Close();
+                }
+            }
+
             return serviceHost;
         }
 
@@ -41,8 +59,8 @@ namespace ServiceModel.Composition
         /// When overridden in derived class, creates <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer"/>
         /// with custom parts catalog and/or export providers.
         /// </summary>
-        /// <returns></returns>
-        protected abstract CompositionContainer GetContainer();
+        /// <returns>Configured <see cref="CompositionContainer"/>.</returns>
+        protected abstract CompositionContainer CreateContainer();
 
         /// <summary>
         /// Configures the specified service host using composed exports marked by <see cref="ExportServiceConfigurationAttribute"/>.
@@ -51,7 +69,9 @@ namespace ServiceModel.Composition
         /// <param name="container">The composition container.</param>
         protected virtual void Configure(ServiceHost serviceHost, CompositionContainer container)
         {
-            var configurations = container.GetExports<IServiceConfiguration, Meta<TargetServices>>()
+            var exportServiceAttribute = serviceHost.Description.Behaviors.Find<ExportServiceAttribute>();
+            var contractName = exportServiceAttribute != null ? exportServiceAttribute.ContractName : null;
+            var configurations = container.GetExports<IServiceConfiguration, Meta<TargetServices>>(contractName)
                 .Where(x => x.Metadata.MatchesExport(serviceHost.Description));
             foreach (var configuration in configurations)
             {

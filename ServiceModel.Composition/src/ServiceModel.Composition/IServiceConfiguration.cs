@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System.ServiceModel;
+
     /// <summary>
     /// Implements method that can be used to configure <see cref="System.ServiceModel.ServiceHost"/>.
     /// Mark implementation class with<see cref="ExportServiceConfigurationAttribute"/>.

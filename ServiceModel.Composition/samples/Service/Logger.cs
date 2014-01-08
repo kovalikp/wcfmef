@@ -1,14 +1,14 @@
-﻿using ServiceModel.Composition;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Service
+﻿namespace Service
 {
+    using ServiceModel.Composition;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public interface ILogger
     {
         void Log(string message);
@@ -16,7 +16,7 @@ namespace Service
         void Log(string format, params object[] args);
     }
     
-    //[PerServiceInstance]
+    // [PerServiceInstance]
     [Export(typeof(ILogger))]
     public class DebugLogger : ILogger
     {

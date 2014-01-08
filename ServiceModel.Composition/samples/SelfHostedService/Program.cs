@@ -1,15 +1,15 @@
-﻿using ServiceModel.Composition;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SelfHostedService
+﻿namespace SelfHostedService
 {
+    using ServiceModel.Composition;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition.Hosting;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.Text;
+    using System.Threading.Tasks;
+
     class Program
     {
         static void Main(string[] args)
@@ -32,7 +32,7 @@ namespace SelfHostedService
         static void serviceHost_Opened(object sender, EventArgs e)
         {
             var serviceHost = (ServiceHost)sender;
-            //serviceHost.Description.
+            // serviceHost.Description.
         }
     }
 }

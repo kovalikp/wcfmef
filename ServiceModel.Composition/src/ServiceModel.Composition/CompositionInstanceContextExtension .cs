@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Linq;
-using System.ServiceModel;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ComponentModel.Composition.Primitives;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.Threading;
+
     /// <summary>
     /// Provides methods to satisfy imports on an existing part instance using composition specific to service instance context.
     /// </summary>
-    public class CompositionInstanceContextExtension : IExtension<InstanceContext>, ICompositionService
+    public sealed class CompositionInstanceContextExtension : IExtension<InstanceContext>, ICompositionService
     {
         private CompositionContainer _container;
 
@@ -27,27 +25,62 @@ namespace ServiceModel.Composition
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositionInstanceContextExtension"/> class.
         /// </summary>
-        /// <param name="filterCatalog">if set to <c>true</c> filter composition container catalog .</param>
+        /// <param name="filterCatalog">If set to <c>true</c> filter composition container catalog .</param>
         public CompositionInstanceContextExtension(bool filterCatalog)
         {
             _filterCatalog = filterCatalog;
         }
 
+        /// <summary>
+        /// Composes the specified part, with recomposition and validation disabled.
+        /// </summary>
+        /// <param name="part">The part to compose.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Instance context composition container is not available.
+        /// The container is not initialized yet or it is already disposed.
+        /// </exception>
+        public void SatisfyImportsOnce(ComposablePart part)
+        {
+            var container = _container;
+            if (container == null)
+            {
+                throw new InvalidOperationException("Instance context composition container is not available.");
+            }
+
+            container.SatisfyImportsOnce(part);
+        }
+
+        void IExtension<InstanceContext>.Attach(InstanceContext owner)
+        {
+            // pass
+        }
+
+        void IExtension<InstanceContext>.Detach(InstanceContext owner)
+        {
+            // pass
+        }
+
         internal CompositionContainer GetInsanceContextContainer(CompositionContainer container)
         {
             CompositionContainer childContainer = null;
-            childContainer = LazyInitializer.EnsureInitialized(ref _container, ref _containerInitialized, ref _containerLock, () =>
-            {
-                if (_filterCatalog && container.Catalog != null)
+            childContainer = LazyInitializer.EnsureInitialized(
+                ref _container,
+                ref _containerInitialized,
+                ref _containerLock,
+                () =>
                 {
-                    var childCatalog = new FilteredCatalog(container.Catalog
-                        , x => x.ExportDefinitions.Any(ed => UsePerServiceInstancing(ed.Metadata)));
-                    return new CompositionContainer(childCatalog, container);
-                }
-                return new CompositionContainer(container);
-            });
+                    if (_filterCatalog && container.Catalog != null)
+                    {
+                        return CreateContainer(FilterCatalog(container), container);
+                    }
+
+                    return new CompositionContainer(container);
+                });
             if (childContainer == null)
+            {
                 throw new InvalidOperationException("Instance context composition container is not available.");
+            }
+
             return childContainer;
         }
 
@@ -63,30 +96,14 @@ namespace ServiceModel.Composition
             }
         }
 
-        /// <summary>
-        /// Composes the specified part, with recomposition and validation disabled.
-        /// </summary>
-        /// <param name="part">The part to compose.</param>
-        /// <exception cref="InvalidOperationException">
-        /// Instance context composition container is not available. T
-        /// he container is not initialized yet or it is already disposed.
-        /// </exception>
-        public void SatisfyImportsOnce(ComposablePart part)
+        private static FilteredCatalog FilterCatalog(CompositionContainer container)
         {
-            var container = _container;
-            if (container == null)
-                throw new InvalidOperationException("Instance context composition container is not available.");
-            container.SatisfyImportsOnce(part);
+            return new FilteredCatalog(container.Catalog, x => x.ExportDefinitions.Any(ed => UsePerServiceInstancing(ed.Metadata)));
         }
 
-        void IExtension<InstanceContext>.Attach(InstanceContext owner)
+        private static CompositionContainer CreateContainer(FilteredCatalog catalog, CompositionContainer container)
         {
-            //pass
-        }
-
-        void IExtension<InstanceContext>.Detach(InstanceContext owner)
-        {
-            //pass
+            return new CompositionContainer(catalog, container);
         }
 
         private static bool UsePerServiceInstancing(IDictionary<string, object> metadata)
@@ -94,10 +111,10 @@ namespace ServiceModel.Composition
             object value;
             if (metadata.TryGetValue("UsePerServiceInstancing", out value))
             {
-                return (value is bool) && (bool) value;
+                return (value is bool) && (bool)value;
             }
-            return false;
 
+            return false;
         }
     }
 }

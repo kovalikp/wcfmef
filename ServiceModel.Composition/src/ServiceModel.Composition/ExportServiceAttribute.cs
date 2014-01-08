@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
-using System.ServiceModel.Dispatcher;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ServiceModel;
+    using System.ServiceModel.Channels;
+    using System.ServiceModel.Description;
+    using System.ServiceModel.Dispatcher;
+
     /// <summary>
     /// Specifies that marked service type provides an export.
     /// </summary>
@@ -28,7 +23,6 @@ namespace ServiceModel.Composition
         public ExportServiceAttribute()
             : this(null, null)
         {
-
         }
 
         /// <summary>
@@ -39,7 +33,6 @@ namespace ServiceModel.Composition
         public ExportServiceAttribute(string contractName)
             : this(null, contractName)
         {
-
         }
 
         internal ExportServiceAttribute(CompositionContainer container, string contractName)
@@ -48,10 +41,8 @@ namespace ServiceModel.Composition
             Container = container;
         }
 
-        internal CompositionContainer Container { get; set; }
-
         /// <summary>
-        /// Gets or sets a value indicating whether use filtered composition container catalog to enable 
+        /// Gets or sets a value indicating whether use filtered composition container catalog to enable
         /// per service instancing behavior.
         /// </summary>
         /// <value>
@@ -59,8 +50,10 @@ namespace ServiceModel.Composition
         /// </value>
         public bool UsePerServiceInstancing { get; set; }
 
+        internal CompositionContainer Container { get; set; }
+
         /// <summary>
-        /// //pass
+        /// This interface method implementation does not do anything.
         /// </summary>
         /// <param name="serviceDescription">The service description of the service.</param>
         /// <param name="serviceHostBase">The host of the service.</param>
@@ -78,18 +71,19 @@ namespace ServiceModel.Composition
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
         {
             var instanceProvider = new CompositionInstanceProvider(Container, ContractName, ContractType);
-            
+
             foreach (ChannelDispatcherBase dispatcher in serviceHostBase.ChannelDispatchers)
             {
                 var channelDispatcher = dispatcher as ChannelDispatcher;
 
                 if (channelDispatcher == null)
+                {
                     continue;
+                }
 
                 foreach (EndpointDispatcher endpointDispatcher in channelDispatcher.Endpoints)
                 {
                     endpointDispatcher.DispatchRuntime.InstanceProvider = instanceProvider;
-                    //endpointDispatcher.DispatchRuntime.InstanceContextInitializers.an
                     endpointDispatcher.DispatchRuntime.InstanceContextInitializers.Add(
                         new CompositionInstanceContextInitializer(UsePerServiceInstancing));
                 }
@@ -97,7 +91,7 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// //pass
+        /// This interface method implementation does not do anything.
         /// </summary>
         /// <param name="serviceDescription">The service description.</param>
         /// <param name="serviceHostBase">The service host that is currently being constructed.</param>

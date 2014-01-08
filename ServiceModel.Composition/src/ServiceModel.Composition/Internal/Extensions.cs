@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceModel.Composition.Internal
+﻿namespace ServiceModel.Composition.Internal
 {
-    static class Extensions
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ComponentModel.Composition.Primitives;
+    using System.Linq;
+    using System.ServiceModel;
+    using System.ServiceModel.Description;
+
+    internal static class Extensions
     {
         internal static object ExportService(this CompositionContainer container, Type exportType)
         {
@@ -20,19 +18,26 @@ namespace ServiceModel.Composition.Internal
         
         internal static object ExportService(this CompositionContainer container, string contractName, Type exportType)
         {
-            return container.ExportService(AttributedModelServices.GetContractName(exportType), AttributedModelServices.GetTypeIdentity(exportType));
+            return container.ExportService(contractName, AttributedModelServices.GetTypeIdentity(exportType));
         }
 
         internal static object ExportService(this CompositionContainer container, string contractName, string requiredTypeIdentity)
         {
             var importDefinition = new ContractBasedImportDefinition(
-                contractName, requiredTypeIdentity,
-                null, ImportCardinality.ZeroOrMore, true, true, CreationPolicy.Any);
+                contractName, 
+                requiredTypeIdentity,
+                null, 
+                ImportCardinality.ZeroOrMore, 
+                true, 
+                true, 
+                CreationPolicy.Any);
 
             Export export = container.GetExports(importDefinition).FirstOrDefault();
 
             if (export == null)
+            {
                 throw new InvalidOperationException();
+            }
 
             return export.Value;
         }
@@ -44,7 +49,7 @@ namespace ServiceModel.Composition.Internal
 
         internal static bool MatchesExport(this ITargetServices targetServices, ServiceDescription serviceDescription)
         {
-            return targetServices.ServiceTypes.IsNullOrEmptyOrContains(serviceDescription.ServiceType);
+            return targetServices.ServiceType == null || targetServices.ServiceType == serviceDescription.ServiceType;
         }
         
         internal static bool MatchesExport(this Meta<TargetEndpoints> targetEnpoints, ServiceDescription serviceDescription, ServiceEndpoint serviceEndpoint)
@@ -54,13 +59,12 @@ namespace ServiceModel.Composition.Internal
 
         internal static bool MatchesExport(this ITargetEndpoints targetEnpoints, ServiceDescription serviceDescription, ServiceEndpoint serviceEndpoint)
         {
-            var matchServiceType = targetEnpoints.ServiceTypes.IsNullOrEmptyOrContains(serviceDescription.ServiceType);
+            var matchServiceType = targetEnpoints.ServiceType == null || targetEnpoints.ServiceType == serviceDescription.ServiceType;
             var matchEndpointName = targetEnpoints.EndpointNames.IsNullOrEmptyOrContains(serviceEndpoint.Name);
 
             var matchBinding = targetEnpoints.BindingNames.IsNullOrEmpty() && targetEnpoints.BindingTypes.IsNullOrEmpty();
             matchBinding = matchBinding || targetEnpoints.BindingNames.IsNotNullAndContains(serviceEndpoint.Binding.Name);
             matchBinding = matchBinding || targetEnpoints.BindingTypes.IsNotNullAndContains(serviceEndpoint.Binding.GetType());
-
 
             var matchContract = targetEnpoints.ContractNames.IsNullOrEmpty() && targetEnpoints.ContractTypes.IsNullOrEmpty();
             matchContract = matchContract || targetEnpoints.ContractNames.IsNotNullAndContains(serviceEndpoint.Contract.Name);
@@ -77,7 +81,7 @@ namespace ServiceModel.Composition.Internal
 
         internal static bool MatchesExport(this ITargetContracts targetContract, ContractDescription contractDescription)
         {
-            return targetContract.ContractTypes.IsNullOrEmptyOrContains(contractDescription.ContractType);
+            return targetContract.ServiceContractType == null || targetContract.ServiceContractType == contractDescription.ContractType;
         }
 
         internal static bool MatchesExport(this Meta<TargetOperations> targetOperations, ContractDescription contractDescription, OperationDescription operationDescription)
@@ -87,7 +91,7 @@ namespace ServiceModel.Composition.Internal
 
         internal static bool MatchesExport(this ITargetOperations targetOperations, ContractDescription contractDescription, OperationDescription operationDescription)
         {
-            var matchContractType = targetOperations.ContractTypes.IsNullOrEmptyOrContains(contractDescription.ContractType);
+            var matchContractType = targetOperations.ServiceContractType == null || targetOperations.ServiceContractType == contractDescription.ContractType;
             var matchOperationName = targetOperations.OperationNames.IsNullOrEmptyOrContains(operationDescription.Name);
             return matchContractType && matchOperationName;
         }
@@ -96,7 +100,6 @@ namespace ServiceModel.Composition.Internal
         {
             return array == null || array.Length == 0;
         }
-
 
         internal static bool IsNullOrEmptyOrContains<T>(this T[] array, T item)
         {
