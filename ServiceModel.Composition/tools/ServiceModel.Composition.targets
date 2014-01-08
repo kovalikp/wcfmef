@@ -55,6 +55,6 @@ Project global post-settings and targets.
   </Target>
   
   <Import Project="StyleCop.targets" Condition="Exists('..\packages\StyleCop.4.7.10.0\lib\StyleCop.dll')" />
-  <Import Project="$(CustomAfterEntityFrameworkTargets)" Condition="Exists('$(CustomAfterEntityFrameworkTargets)')" Label="Post-targets Build Extensibility Point." />
+  <Import Project="$(CustomAfterServiceModelCompositionTargets)" Condition="Exists('$(CustomAfterServiceModelCompositionTargets)')" Label="Post-targets Build Extensibility Point." />
 </Project>
 

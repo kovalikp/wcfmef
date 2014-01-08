@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<assemblies defaultPublicKeyToken="b77a5c561934e089">
+<assemblies defaultPublicKeyToken="3c63a49a926eba28">
   <assembly name="ServiceModel.Composition" />
 </assemblies>

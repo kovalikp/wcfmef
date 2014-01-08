@@ -3,7 +3,7 @@
 Project global pre-settings.
 **************************************************************************************************** -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(CustomBeforeEntityFrameworkTargets)" Condition="Exists('$(CustomBeforeEntityFrameworkTargets)')" Label="Pre-targets Build Extensibility Point."/>
+  <Import Project="$(CustomBeforeServiceModelCompositionTargets)" Condition="Exists('$(CustomBeforeServiceModelCompositionTargets)')" Label="Pre-targets Build Extensibility Point."/>
 
   <PropertyGroup>
     <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>

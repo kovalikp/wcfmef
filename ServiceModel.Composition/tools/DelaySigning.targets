@@ -1,0 +1,21 @@
+<Project ToolsVersion="4.0" DefaultTargets="SignAssembly" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="SignAssembly">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path"
+              PropertyName="SdkPath" />
+    </GetFrameworkSdkPath>
+
+    <ItemGroup>
+      <SnExePath Include="$(SdkPath)**\x64\**\sn.exe" Condition=""/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(SnExePath)' == ''">
+      <SnExePath Include="$(SdkPath)**\sn.exe" Condition=""/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <SignAssemblyCommand>"@(SnExePath)" -T "$(ProjectToSign)"</SignAssemblyCommand>
+    </PropertyGroup>
+    <Exec Command="$(SignAssemblyCommand)" />
+  </Target>
+</Project>
