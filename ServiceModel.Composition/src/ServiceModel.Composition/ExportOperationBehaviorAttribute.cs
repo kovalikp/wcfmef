@@ -9,7 +9,7 @@
     /// Exports implementation of <see cref="System.ServiceModel.Description.IOperationBehavior"/> for composition.
     /// </summary>
     /// <remarks>
-    /// The <see cref="ExportOperationBehaviorAttribute.ContractType"/>, <see cref="ExportOperationBehaviorAttribute.OperationNames"/>
+    /// The <see cref="ExportOperationBehaviorAttribute.ServiceContractType"/>, <see cref="ExportOperationBehaviorAttribute.OperationNames"/>
     /// properties will be used to match behavior to target endpoint.
     /// Empty <see cref="System.Array"/> or <see langword="null" /> values will be matched to any endpoint.
     /// You can use attribute multiple times for more fine-grained control.

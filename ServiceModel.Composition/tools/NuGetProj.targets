@@ -151,6 +151,8 @@ NuGetPack: Creates a nuget package.
     <!-- Invalidate outputs to force a full build in case of failure -->
     <Delete Files="$(NuGetPackTargetFile)" />
     <MakeDir Directories="$(PackageOutputDir)" />
+    <Message Importance="high" Text="$(BuildCommand)" />
+    <Message Importance="high" Text="$(MSBuildProjectDirectory)" />
     <Exec Command="$(BuildCommand)" StandardOutputImportance="high" StandardErrorImportance="high" WorkingDirectory="$(MSBuildProjectDirectory)" CustomErrorRegularExpression="invalid"/>
     <ItemGroup>
       <Clean Include="$(PackageOutputDir)\$(NuGetPackageId).$(NuGetPackageVersion)*.nupkg" />

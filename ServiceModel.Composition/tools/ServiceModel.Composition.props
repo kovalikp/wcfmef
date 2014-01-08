@@ -6,8 +6,8 @@ Project global pre-settings.
   <Import Project="$(CustomBeforeEntityFrameworkTargets)" Condition="Exists('$(CustomBeforeEntityFrameworkTargets)')" Label="Pre-targets Build Extensibility Point."/>
 
   <PropertyGroup>
-    <VersionMajor Condition="'$(VersionMajor)' == ''">0</VersionMajor>
-    <VersionMinor Condition="'$(VersionMinor)' == ''">1</VersionMinor>
+    <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>
+    <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
     <VersionBuild Condition="'$(VersionBuild)' == ''">0</VersionBuild>
     <VersionRevision Condition="'$(VersionRevision)' == ''">0</VersionRevision>
     <VersionRelease Condition="'$(VersionRelease)' == ''">0-alpha1</VersionRelease>
@@ -25,7 +25,7 @@ Project global pre-settings.
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<BuildConfiguration Include="$(Configuration40)" />-->
+    <BuildConfiguration Include="$(Configuration40)" />
     <BuildConfiguration Include="$(Configuration45)" Condition="'$(Configuration)' == '$(Configuration45)'" />
   </ItemGroup>
 

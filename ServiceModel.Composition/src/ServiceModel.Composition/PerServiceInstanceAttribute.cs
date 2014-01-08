@@ -29,9 +29,9 @@
         {
             UsePerServiceInstancing = usePerServiceInstancing;
         }
-        
+
         /// <summary>
-        /// Gets a value indicating whether use of filtered composition container catalog to enable 
+        /// Gets a value indicating whether use of filtered composition container catalog to enable
         /// per service instancing behavior.
         /// </summary>
         /// <value>

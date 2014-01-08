@@ -15,7 +15,7 @@
     /// <remarks>
     /// Services with <see cref="ServiceBehaviorAttribute.InstanceContextMode"/> set to <see cref="InstanceContextMode.Single"/>
     /// require default constructor. Service object will be exported on opening and set using
-    /// <see cref="ServiceBehaviorAttribute.SetWellKnownSingleton(object)"/>
+    /// <see cref="ServiceBehaviorAttribute.SetWellKnownSingleton(object)"/>.
     /// </remarks>
     public class ServiceCompositionHost : ServiceHost
     {

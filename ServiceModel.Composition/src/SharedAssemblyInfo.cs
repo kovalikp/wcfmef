@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyProduct("ServiceModel.Composition")]
 [assembly: AssemblyMetadata("Serviceable", "True")]
-
 #if NET40
 
 namespace System.Reflection
@@ -26,6 +25,7 @@ namespace System.Reflection
         }
 
         public string Key { get; set; }
+
         public string Value { get; set; }
     }
 }

@@ -1,12 +1,12 @@
 ﻿#if NET40
+
 namespace ServiceModel.Composition
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
+    /// <content>
+    /// Expose ServiceHosts as IEnumerable.
+    /// </content>
     public partial class SelfHostingContainer
     {
         /// <summary>
@@ -27,6 +27,7 @@ namespace ServiceModel.Composition
                 return _serviceHosts;
             }
         }
-   }
+    }
 }
+
 #endif

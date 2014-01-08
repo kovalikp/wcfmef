@@ -1,7 +1,6 @@
 ﻿namespace ServiceModel.Composition.Internal
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Metadata information for <see cref="ExportServiceBehaviorAttribute"/>.

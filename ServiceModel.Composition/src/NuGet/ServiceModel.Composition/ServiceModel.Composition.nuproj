@@ -1,33 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props"/>
   <PropertyGroup>
-    <ProjectGuid>bb2e96e2-6daa-4881-b824-6fd0621d8d84</ProjectGuid>
-    <OutputPath>..\..\..\Bin\Nuget\</OutputPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <NuBuildVersionSource>Manual</NuBuildVersionSource>
-    <NuBuildVersionFileName>True</NuBuildVersionFileName>
-    <NuBuildAddBinariesToSubfolder>True</NuBuildAddBinariesToSubfolder>
-    <NuBuildIncludePdbs>True</NuBuildIncludePdbs>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'DebugNet40' ">
-    <OutputPath>bin\DebugNet40\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseNet40' ">
-    <OutputPath>bin\ReleaseNet40\</OutputPath>
+    <NuSpecFile>ServiceModel.Composition.nuspec</NuSpecFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ServiceModel.Composition.nuspec" />
+    <NuGetContent Include="ServiceModel.Composition.dll;ServiceModel.Composition.pdb;ServiceModel.Composition.xml">
+      <Source>$(OutputPath40)</Source>
+      <Destination>lib\net40</Destination>
+    </NuGetContent>
+    <NuGetContent Include="ServiceModel.Composition.dll;ServiceModel.Composition.pdb;ServiceModel.Composition.xml">
+      <Source>$(OutputPath45)</Source>
+      <Destination>lib\net45</Destination>
+    </NuGetContent>
+    <NuGetContent Include="ServiceModel.Composition.pdb" Condition="'$(NuGetPackSymbols)' == 'true'">
+      <Source>$(OutputPath40)</Source>
+      <Destination>lib\net40</Destination>
+    </NuGetContent>
+    <NuGetContent Include="ServiceModel.Composition.pdb" Condition="'$(NuGetPackSymbols)' == 'true'">
+      <Source>$(OutputPath45)</Source>
+      <Destination>lib\net45</Destination>
+    </NuGetContent>
+    <NuGetContentProject Include="$(RepositoryRoot)\src\ServiceModel.Composition\ServiceModel.Composition.csproj" Condition="'$(NuGetPackSymbols)' == 'true'" />
+    <NuGetContent Include="tools\*">
+      <Destination>tools</Destination>
+    </NuGetContent>
+    <NuGetContent Include="Content\*">
+      <Destination>content</Destination>
+    </NuGetContent>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ServiceModel.Composition\ServiceModel.Composition.csproj">
-      <Name>ServiceModel.Composition</Name>
-      <Project>{d4af1521-7281-49b1-b9bb-e940682af4f2}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\NuBuild\v1\NuBuild.targets" />
+  <Import Project="$(RepositoryRoot)Tools\NuGetProj.targets"/>
 </Project>
