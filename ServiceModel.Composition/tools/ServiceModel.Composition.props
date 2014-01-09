@@ -10,7 +10,7 @@ Project global pre-settings.
     <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
     <VersionBuild Condition="'$(VersionBuild)' == ''">0</VersionBuild>
     <VersionRevision Condition="'$(VersionRevision)' == ''">0</VersionRevision>
-    <VersionRelease Condition="'$(VersionRelease)' == ''">0-alpha1</VersionRelease>
+    <VersionRelease Condition="'$(VersionRelease)' == ''">0</VersionRelease>
   </PropertyGroup>
 
   <PropertyGroup>
