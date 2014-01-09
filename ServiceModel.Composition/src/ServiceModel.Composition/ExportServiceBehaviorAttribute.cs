@@ -27,9 +27,9 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportServiceBehaviorAttribute"/> class
-        /// exporting the marked type for target service types.
+        /// exporting the marked type for target service type.
         /// </summary>
-        /// <param name="serviceType">The service types.</param>
+        /// <param name="serviceType">The service type.</param>
         public ExportServiceBehaviorAttribute(Type serviceType)
             : base(null, typeof(IServiceBehavior))
         {
@@ -37,10 +37,10 @@
         }
 
         /// <summary>
-        /// Gets the service types that behavior should be attached to.
+        /// Gets the service type that behavior should be attached to.
         /// </summary>
         /// <value>
-        /// The service types.
+        /// The service type.
         /// </value>
         public Type ServiceType { get; private set; }
     }

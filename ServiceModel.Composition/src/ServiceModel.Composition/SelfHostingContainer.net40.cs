@@ -3,6 +3,7 @@
 namespace ServiceModel.Composition
 {
     using System.Collections.Generic;
+    using System.ServiceModel;
 
     /// <content>
     /// Expose ServiceHosts as IEnumerable.
@@ -15,15 +16,11 @@ namespace ServiceModel.Composition
         /// <value>
         /// The service hosts.
         /// </value>
-        public IEnumerable<ServiceCompositionHost> ServiceHosts
+        public IEnumerable<ServiceHost> ServiceHosts
         {
             get
             {
-                if (_serviceHosts == null)
-                {
-                    Initialize();
-                }
-
+                Initialize();
                 return _serviceHosts;
             }
         }

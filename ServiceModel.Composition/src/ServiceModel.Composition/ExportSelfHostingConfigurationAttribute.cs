@@ -20,6 +20,10 @@
         public ExportSelfHostingConfigurationAttribute(Type serviceType)
             : this(null, serviceType)
         {
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException("serviceType");
+            }
         }
 
         /// <summary>

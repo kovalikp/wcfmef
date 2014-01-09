@@ -8,13 +8,15 @@
     using ServiceModel.Composition.Internal;
 
     /// <summary>
-    /// TODO: Documentation.
+    /// Service container for self-hosted environment. 
+    /// Uses implementations of <see cref="ISelfHostingConfiguration"/> interface to discover services.
     /// </summary>
     public partial class SelfHostingContainer
     {
         private CompositionContainer _container;
         private string _compositionContractName;
-        private List<ServiceCompositionHost> _serviceHosts;
+        private List<ServiceHost> _serviceHosts;
+        private object _initializationLock = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfHostingContainer"/> class.
@@ -28,65 +30,85 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SelfHostingContainer"/> class.
         /// </summary>
-        /// <param name="container">The container.</param>
+        /// <param name="compositionContainer">The configured composition container.</param>
         /// <param name="compositionContractName">Name of the composition contract.</param>
-        public SelfHostingContainer(CompositionContainer container, string compositionContractName)
+        public SelfHostingContainer(CompositionContainer compositionContainer, string compositionContractName)
         {
-            _container = container;
+            _container = compositionContainer;
             _compositionContractName = compositionContractName;
         }
 
-        private IEnumerable<ServiceCompositionHost> OpenableServiceHosts
-        {
-            get
-            {
-                return ServiceHosts.Where(x => x.State == CommunicationState.Created);
-            }
-        }
-
-        private IEnumerable<ServiceCompositionHost> ClosableServiceHosts
-        {
-            get
-            {
-                return ServiceHosts.Where(x => x.State == CommunicationState.Opening || x.State == CommunicationState.Opened);
-            }
-        }
-
         /// <summary>
-        /// Opens this instance.
+        /// Causes service hosts to open.
         /// </summary>
+        /// <exception cref="System.AggregateException">
+        /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Open"/>
+        /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
+        /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exceptions rethrown as aggregate expeption.")]
         public void Open()
         {
-            foreach (var serviceHost in OpenableServiceHosts)
+            List<Exception> exceptions = new List<Exception>();
+            foreach (var serviceHost in ServiceHosts)
             {
-                serviceHost.Open();
+                try
+                {
+                    serviceHost.Open();
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
             }
         }
 
         /// <summary>
-        /// Opens the specified timeout.
+        /// Causes service hosts to open within a specified interval of time.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
+        /// <exception cref="System.AggregateException">
+        /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Open(System.TimeSpan)"/>
+        /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
+        /// </exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exceptions rethrown as aggregate expeption.")]
         public void Open(TimeSpan timeout)
         {
-            foreach (var serviceHost in OpenableServiceHosts)
+            List<Exception> exceptions = new List<Exception>();
+            foreach (var serviceHost in ServiceHosts)
             {
-                serviceHost.Open(timeout);
+                try
+                {
+                    serviceHost.Open(timeout);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
             }
         }
 
         /// <summary>
-        /// Closes this instance.
+        /// Causes service hosts to close.
         /// </summary>
         /// <exception cref="System.AggregateException">
         /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Close"/>
         /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
         /// </exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exceptions rethrown as aggregate expeption.")]
         public void Close()
         {
             List<Exception> exceptions = new List<Exception>();
-            foreach (var serviceHost in ClosableServiceHosts)
+            foreach (var serviceHost in ServiceHosts)
             {
                 try
                 {
@@ -105,18 +127,18 @@
         }
 
         /// <summary>
-        /// Closes the specified timeout.
+        /// Causes service hosts to close within a specified interval of time.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <exception cref="System.AggregateException">
         /// Contains exceptions thrown by <see cref="M:System.ServiceModel.Channels.CommunicationObject.Close(System.TimeSpan)"/>
         /// in its <see cref="P:System.AggregateException.InnerExceptions"/> collection.
         /// </exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Exceptions rethrown as aggregate expeption.")]
         public void Close(TimeSpan timeout)
         {
             List<Exception> exceptions = new List<Exception>();
-            foreach (var serviceHost in ClosableServiceHosts)
+            foreach (var serviceHost in ServiceHosts)
             {
                 try
                 {
@@ -134,25 +156,57 @@
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        /// <summary>
+        /// Causes service hosts to abort.
+        /// </summary>
+        public void Abort()
+        {
+            foreach (var serviceHost in ServiceHosts)
+            {
+                serviceHost.Abort();
+            }
+        }
+
         private void Initialize()
         {
-            var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
-            var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
-            var serviceHosts = new List<ServiceCompositionHost>();
-
-            foreach (var export in exports)
+            if (_serviceHosts == null)
             {
-                foreach (var serviceType in export.Metadata.View.Select(x => x.ServiceType))
+                lock (_initializationLock)
                 {
-                    var baseAddresses = export.Value.GetBaseAddresses(serviceType);
-                    var serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
-                    configurations.ConfigureServiceHost(serviceHost);
-                    serviceHosts.Add(serviceHost);
+                    if (_serviceHosts == null)
+                    {
+                        var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
+                        var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
+                        var serviceHosts = new List<ServiceHost>();
+
+                        foreach (var export in exports)
+                        {
+                            foreach (var serviceType in export.Metadata.View.Select(x => x.ServiceType))
+                            {
+                                ServiceCompositionHost serviceHost = null;
+                                try
+                                {
+                                    var baseAddresses = export.Value.GetBaseAddresses(serviceType);
+                                    serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
+                                    configurations.ConfigureServiceHost(serviceHost);
+                                    serviceHosts.Add(serviceHost);
+                                    serviceHost = null;
+                                }
+                                finally
+                                {
+                                    var disposable = serviceHost as IDisposable;
+                                    if (disposable != null)
+                                    {
+                                        disposable.Dispose();
+                                    }
+                                }
+                            }
+                        }
+
+                        _serviceHosts = serviceHosts;
+                    }
                 }
             }
-
-            _serviceHosts = serviceHosts;
         }
     }
 

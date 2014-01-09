@@ -42,29 +42,27 @@
         /// of <see cref="System.AppDomain.CurrentDomain"/>.
         /// </summary>
         /// <returns>Composition container.</returns>
-        protected override CompositionContainer CreateContainer()
+        protected override CompositionContainer GetContainer()
         {
             return SharedContainer;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Object 'catalog' must not be disposed.'")]
         private static CompositionContainer ContainerFactory()
         {
             AggregateCatalog catalog = null;
-            AggregateCatalog tmpCatalog = null;
             CompositionContainer container = null;
             try
             {
-                tmpCatalog = CreateCatalog();
+                catalog = CreateCatalog();
                 container = new CompositionContainer(catalog, true);
-                catalog = tmpCatalog;
-                tmpCatalog = null;
+                catalog = null;
             }
             finally
             {
-                if (tmpCatalog != null)
+                if (catalog != null)
                 {
-                    tmpCatalog.Dispose();
+                    catalog.Dispose();
                 }
             }
 

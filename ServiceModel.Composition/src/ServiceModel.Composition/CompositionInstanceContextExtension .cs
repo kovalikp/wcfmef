@@ -10,7 +10,7 @@
     using System.Threading;
 
     /// <summary>
-    /// Provides methods to satisfy imports on an existing part instance using composition specific to service instance context.
+    /// Provides methods to satisfy imports on an existing part instance, using composition specific to service instance context.
     /// </summary>
     public sealed class CompositionInstanceContextExtension : IExtension<InstanceContext>, ICompositionService
     {

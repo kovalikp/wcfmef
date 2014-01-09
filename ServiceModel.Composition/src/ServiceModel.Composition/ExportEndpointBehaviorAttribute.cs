@@ -33,7 +33,7 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
-        /// exporting the marked type for any endpoint of specified service types.
+        /// exporting the marked type for any endpoint of specified service type.
         /// </summary>
         /// <param name="serviceType">The service types.</param>
         public ExportEndpointBehaviorAttribute(Type serviceType)
@@ -43,7 +43,7 @@
         }
 
         /// <summary>
-        /// Gets the service types that behavior should be attached to.
+        /// Gets the service type that behavior should be attached to.
         /// </summary>
         /// <value>
         /// The service types.

@@ -24,31 +24,29 @@
         /// <exception cref="System.InvalidOperationException">
         /// The <see cref="M:ServiceModel.Composition.ServiceCompositionHostFactoryBase.GetContainer"/> method returns <see langword="null" />.
         /// </exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Object 'serviceHost' must not be disposed.")]
         protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
         {
-            var container = CreateContainer();
+            var container = GetContainer();
 
             if (container == null)
             {
                 throw new InvalidOperationException();
             }
 
-            ServiceCompositionHost tmpServiceHost = null;
             ServiceCompositionHost serviceHost = null;
 
             try
             {
-                tmpServiceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                serviceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
                 Configure(serviceHost, container);
-                serviceHost = tmpServiceHost;
-                tmpServiceHost = null;
+                serviceHost = null;
             }
             finally
             {
-                if (tmpServiceHost != null)
+                if (serviceHost != null)
                 {
-                    tmpServiceHost.Close();
+                    serviceHost.Close();
                 }
             }
 
@@ -56,11 +54,12 @@
         }
 
         /// <summary>
-        /// When overridden in derived class, creates <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer"/>
+        /// When overridden in derived class, gets <see cref="System.ComponentModel.Composition.Hosting.CompositionContainer"/>
         /// with custom parts catalog and/or export providers.
         /// </summary>
         /// <returns>Configured <see cref="CompositionContainer"/>.</returns>
-        protected abstract CompositionContainer CreateContainer();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Behavior may vary based on implementation.")]
+        protected abstract CompositionContainer GetContainer();
 
         /// <summary>
         /// Configures the specified service host using composed exports marked by <see cref="ExportServiceConfigurationAttribute"/>.
@@ -69,6 +68,16 @@
         /// <param name="container">The composition container.</param>
         protected virtual void Configure(ServiceHost serviceHost, CompositionContainer container)
         {
+            if (serviceHost == null)
+            {
+                throw new ArgumentNullException("serviceHost");
+            }
+
+            if (container == null)
+            {
+                throw new ArgumentNullException("container");
+            }
+
             var exportServiceAttribute = serviceHost.Description.Behaviors.Find<ExportServiceAttribute>();
             var contractName = exportServiceAttribute != null ? exportServiceAttribute.ContractName : null;
             var configurations = container.GetExports<IServiceConfiguration, Meta<TargetServices>>(contractName)

@@ -19,7 +19,7 @@
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportServiceConfigurationAttribute"/> class.
-        /// for any service type exporting the type marked with this attribute under the default composition contract name.
+        /// Exports the type marked with this attribute for any service type. Uses the default composition contract name.
         /// </summary>
         public ExportServiceConfigurationAttribute()
             : this(null, null)
@@ -27,8 +27,8 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportServiceConfigurationAttribute"/> class
-        /// for target service type exporting the type marked with this attribute under the default composition contract name.
+        /// Initializes a new instance of the <see cref="ExportServiceConfigurationAttribute"/> class.
+        /// Exports the type marked with this attribute for specified service type. Uses the default composition contract name.
         /// </summary>
         /// <param name="serviceType">The service types.</param>
         public ExportServiceConfigurationAttribute(Type serviceType)
@@ -37,8 +37,8 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportServiceConfigurationAttribute"/> class
-        /// for target service type exporting the type marked with this attribute under the specified composition contract name.
+        /// Initializes a new instance of the <see cref="ExportServiceConfigurationAttribute"/> class.
+        /// Exports the type marked with this attribute for specified service type. Uses the specified composition contract name.
         /// </summary>
         /// <param name="contractName">
         /// The contract name that is used to export the type marked with this

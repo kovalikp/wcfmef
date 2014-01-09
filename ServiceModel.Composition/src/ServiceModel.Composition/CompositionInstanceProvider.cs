@@ -39,6 +39,11 @@
         /// </returns>
         public object GetInstance(InstanceContext instanceContext, Message message)
         {
+            if (instanceContext == null)
+            {
+                throw new ArgumentNullException("instanceContext");
+            }
+
             var extension = instanceContext.Extensions.Find<CompositionInstanceContextExtension>();
             var container = extension.GetInsanceContextContainer(_container);
 
@@ -67,6 +72,11 @@
         /// <param name="instance">The service object to be recycled.</param>
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
+            if (instanceContext == null)
+            {
+                throw new ArgumentNullException("instanceContext");
+            }
+
             var extension = instanceContext.Extensions.Find<CompositionInstanceContextExtension>();
             if (extension != null)
             {

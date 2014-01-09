@@ -104,6 +104,11 @@
         /// <param name="dispatchRuntime">The dispatch runtime that controls service execution.</param>
         public void ApplyDispatchBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, DispatchRuntime dispatchRuntime)
         {
+            if (dispatchRuntime == null)
+            {
+                throw new ArgumentNullException("dispatchRuntime");
+            }
+
             dispatchRuntime.InstanceProvider = new CompositionInstanceProvider(Container, ContractName, ContractType);
             dispatchRuntime.InstanceContextInitializers.Add(new CompositionInstanceContextInitializer(UsePerServiceInstancing));
         }

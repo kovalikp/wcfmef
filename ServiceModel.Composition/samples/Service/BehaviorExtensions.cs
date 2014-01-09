@@ -14,7 +14,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// TODO: Documentation.
+    /// Endpoint behavior applied to services implementing <see cref="ISampleService"/> contract.
     /// </summary>
     [ExportEndpointBehavior(ContractTypes = new[] { typeof(ISampleService) })]
     public class EndpointBehaviorExtension : IEndpointBehavior
@@ -46,7 +46,7 @@
     }
 
     /// <summary>
-    /// TODO: Documentation.
+    /// Operation behavior applied to any service.
     /// </summary>
     [ExportServiceBehavior]
     public class ServiceBehaviorExtension : IServiceBehavior
@@ -97,7 +97,7 @@
     }
 
     /// <summary>
-    /// TODO: Documentation.
+    /// Operation behavior applied to <c>Ping</c> operation of services implementing <see cref="ISampleService"/> contract.
     /// </summary>
     [ExportOperationBehavior(typeof(ISampleService), new[]{"Ping"})]
     public class OperationBehaviorExtension : IOperationBehavior
@@ -149,7 +149,7 @@
     }
 
     /// <summary>
-    /// TODO: Documentation.
+    /// Contract behavior applied to any services.
     /// </summary>
     [ExportContractBehavior]
     public class ContractBehaviorExtension : IContractBehavior
@@ -162,14 +162,32 @@
             _logger = logger;
         }
 
+        /// <summary>
+        /// Configures any binding elements to support the contract behavior.
+        /// </summary>
+        /// <param name="contractDescription">The contract description to modify.</param>
+        /// <param name="endpoint">The endpoint to modify.</param>
+        /// <param name="bindingParameters">The objects that binding elements require to support the behavior.</param>
         public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
         }
 
+        /// <summary>
+        /// Implements a modification or extension of the client across a contract.
+        /// </summary>
+        /// <param name="contractDescription">The contract description for which the extension is intended.</param>
+        /// <param name="endpoint">The endpoint.</param>
+        /// <param name="clientRuntime">The client runtime.</param>
         public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
         }
 
+        /// <summary>
+        /// Implements a modification or extension of the client across a contract.
+        /// </summary>
+        /// <param name="contractDescription">The contract description to be modified.</param>
+        /// <param name="endpoint">The endpoint that exposes the contract.</param>
+        /// <param name="dispatchRuntime">The dispatch runtime that controls service execution.</param>
         public void ApplyDispatchBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, DispatchRuntime dispatchRuntime)
         {
         }

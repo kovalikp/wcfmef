@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether use filtered composition container catalog to enable
+        /// Gets or sets a value indicating whether use filtered composition container catalog. Enables
         /// per service instancing behavior.
         /// </summary>
         /// <value>
@@ -70,8 +70,12 @@
         /// <param name="serviceHostBase">The host that is currently being built.</param>
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
         {
+            if (serviceHostBase == null)
+            {
+                throw new ArgumentNullException("serviceHostBase");
+            }
+            
             var instanceProvider = new CompositionInstanceProvider(Container, ContractName, ContractType);
-
             foreach (ChannelDispatcherBase dispatcher in serviceHostBase.ChannelDispatchers)
             {
                 var channelDispatcher = dispatcher as ChannelDispatcher;

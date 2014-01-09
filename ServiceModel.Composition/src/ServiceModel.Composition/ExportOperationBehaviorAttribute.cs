@@ -29,7 +29,7 @@
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportOperationBehaviorAttribute"/> class
-        /// exporting the marked type for any operation of specified contract types.
+        /// exporting the marked type for any operation of specified service contract type.
         /// </summary>
         /// <param name="serviceContractType">The contract types.</param>
         public ExportOperationBehaviorAttribute(Type serviceContractType)

@@ -27,9 +27,8 @@ namespace Client
                 Console.WriteLine(client.Ping(new PingRequest() { ClientId = 2 }));
             }
 
+            Console.WriteLine("Press RETURN to exit...");
             Console.ReadLine();
-
-
         }
     }
 }
