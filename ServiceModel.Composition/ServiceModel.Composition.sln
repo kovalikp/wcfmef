@@ -52,6 +52,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceModel.Composition", 
 		src\NuGet\ServiceModel.Composition\ServiceModel.Composition.nuspec = src\NuGet\ServiceModel.Composition\ServiceModel.Composition.nuspec
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.Registration", "src\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.csproj", "{9C042358-8E3F-42FC-845E-CD15D10BEDD8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceModel.Composition.Registration", "ServiceModel.Composition.Registration", "{4E3B1C24-8DBE-4680-8448-0BD3BA1AECF7}"
+	ProjectSection(SolutionItems) = preProject
+		src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuproj = src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuproj
+		src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuspec = src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +108,12 @@ Global
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00}.ReleaseNet40|Any CPU.ActiveCfg = ReleaseNet40|Any CPU
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00}.ReleaseNet40|Any CPU.Build.0 = ReleaseNet40|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.DebugNet40|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.ReleaseNet40|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,5 +124,6 @@ Global
 		{35181B80-7261-46DC-B0E3-39B879A5B67C} = {430CB8DE-3A39-491E-9133-9DE0B6651235}
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00} = {430CB8DE-3A39-491E-9133-9DE0B6651235}
 		{3BDF98C1-8234-4BA1-97B6-AECBC7D42A36} = {077DF496-6D25-49E2-9295-8AFB22C8B772}
+		{4E3B1C24-8DBE-4680-8448-0BD3BA1AECF7} = {077DF496-6D25-49E2-9295-8AFB22C8B772}
 	EndGlobalSection
 EndGlobal
