@@ -8,9 +8,9 @@ Project global pre-settings.
   <PropertyGroup>
     <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>
     <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
-    <VersionBuild Condition="'$(VersionBuild)' == ''">0</VersionBuild>
+    <VersionBuild Condition="'$(VersionBuild)' == ''">2</VersionBuild>
     <VersionRevision Condition="'$(VersionRevision)' == ''">0</VersionRevision>
-    <VersionRelease Condition="'$(VersionRelease)' == ''">0</VersionRelease>
+    <VersionRelease Condition="'$(VersionRelease)' == ''">2</VersionRelease>
   </PropertyGroup>
 
   <PropertyGroup>

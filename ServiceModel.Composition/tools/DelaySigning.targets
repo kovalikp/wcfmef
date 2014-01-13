@@ -1,4 +1,8 @@
 <Project ToolsVersion="4.0" DefaultTargets="SignAssembly" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RepositoryRoot Condition="'$(RepositoryRoot)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\</RepositoryRoot>
+  </PropertyGroup>
+  
   <Target Name="SignAssembly">
     <GetFrameworkSdkPath>
       <Output TaskParameter="Path"
@@ -14,7 +18,11 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <SignAssemblyCommand>"@(SnExePath)" -T "$(ProjectToSign)"</SignAssemblyCommand>
+      <PrivateKey>$([System.IO.Path]::Combine('$(RepositoryRoot)', '$(PrivateKey)'))</PrivateKey>
+      <PrivateKey>$([System.IO.Path]::GetFullPath('$(PrivateKey)'))</PrivateKey>
+    </PropertyGroup>
+    <PropertyGroup>
+      <SignAssemblyCommand>"@(SnExePath)" -R "$(ProjectToSign)" "$(PrivateKey)"</SignAssemblyCommand>
     </PropertyGroup>
     <Exec Command="$(SignAssemblyCommand)" />
   </Target>
