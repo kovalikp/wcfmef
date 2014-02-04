@@ -71,26 +71,30 @@
 
         private static AggregateCatalog CreateCatalog()
         {
-            var catalogs = new List<ComposablePartCatalog>();
+            List<ComposablePartCatalog> catalogs = null;
+            var catalogsTemp = new List<ComposablePartCatalog>();
             var setup = AppDomain.CurrentDomain.SetupInformation;
 
             try
             {
-                if (setup != null)
-                {
-                    catalogs.Add(new DirectoryCatalog(setup.ApplicationBase));
+                catalogsTemp.Add(new DirectoryCatalog(setup.ApplicationBase));
 
-                    if (!string.IsNullOrEmpty(setup.PrivateBinPath))
-                    {
-                        catalogs.Add(new DirectoryCatalog(setup.PrivateBinPath));
-                    }
+                if (!string.IsNullOrEmpty(setup.PrivateBinPath))
+                {
+                    catalogsTemp.Add(new DirectoryCatalog(setup.PrivateBinPath));
                 }
+
+                catalogs = catalogsTemp;
+                catalogsTemp = null;
             }
             finally
             {
-                foreach (var x in catalogs)
+                if (catalogsTemp != null)
                 {
-                    x.Dispose();
+                    foreach (var catalog in catalogsTemp)
+                    {
+                        catalog.Dispose();
+                    }
                 }
             }
 
