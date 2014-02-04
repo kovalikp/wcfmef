@@ -176,19 +176,18 @@
                     if (_serviceHosts == null)
                     {
                         var exports = _container.GetExports<ISelfHostingConfiguration, Meta<TargetServices>>(_compositionContractName);
-                        var configurations = _container.GetExports<IServiceConfiguration, Meta<TargetServices>>(_compositionContractName);
                         var serviceHosts = new List<ServiceHost>();
 
                         foreach (var export in exports)
                         {
                             foreach (var serviceType in export.Metadata.View.Select(x => x.ServiceType))
                             {
-                                ServiceCompositionHost serviceHost = null;
+                                ServiceHost serviceHost = null;
                                 try
                                 {
+                                    var factory = new ServiceCompositionHostFactory(_container);
                                     var baseAddresses = export.Value.GetBaseAddresses(serviceType);
-                                    serviceHost = new ServiceCompositionHost(_container, serviceType, baseAddresses);
-                                    configurations.ConfigureServiceHost(serviceHost);
+                                    serviceHost = factory.CreateServiceHostInternal(serviceType, baseAddresses);
                                     serviceHosts.Add(serviceHost);
                                     serviceHost = null;
                                 }

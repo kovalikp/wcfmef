@@ -110,15 +110,5 @@
         {
             return array != null && array.Contains(item);
         }
-
-        internal static void ConfigureServiceHost(this IEnumerable<Lazy<IServiceConfiguration, Meta<TargetServices>>> exportedConfigurations, ServiceHost serviceHost)
-        {
-            var configurations = exportedConfigurations
-                .Where(x => x.Metadata.MatchesExport(serviceHost.Description)); 
-            foreach (var configuration in configurations)
-            {
-                configuration.Value.Configure(serviceHost);
-            }
-        }
     }
 }

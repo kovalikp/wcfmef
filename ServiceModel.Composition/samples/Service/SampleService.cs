@@ -29,6 +29,10 @@
 
         public PingResponse Ping(PingRequest pingRequest)
         {
+            var part = new object();
+            var compositionExtension = OperationContext.Current.Extensions.Find<CompositionInstanceContextExtension>();
+            compositionExtension.SatisfyImportsOnce(part);
+            
             return new PingResponse
             {
                 ClientId = pingRequest.ClientId,

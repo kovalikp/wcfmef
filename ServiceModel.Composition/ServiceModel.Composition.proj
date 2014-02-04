@@ -28,6 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <NonCoreProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.csproj">
+      <RestorePackages>true</RestorePackages>
+    </NonCoreProjectToBuild>
     <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
      <RestorePackages>true</RestorePackages>
    </NonCoreProjectToBuild>-->
@@ -109,10 +112,17 @@
              Projects="tools\SkipStrongNames.targets" />
   </Target>
 
+  <UsingTask TaskName="Xunit.Runner.MSBuild.xunit"
+           AssemblyFile="packages\xunit.core.2.0.0-alpha-build2576\lib\net45\xunit.runner.msbuild.dll" />
+
   <Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
-    <!--<MSBuild Projects="tools\xUnit.targets"
-            Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
+    <xunit Assemblies="@(XunitAssembly)" Xml="$(OutputPath)TestResults.xml" />
   </Target>
+
+  <!--<Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
+    <MSBuild Projects="tools\xUnit.targets"
+            Properties="Configuration=$(Configuration);$(BuildProperties)" />
+  </Target>-->
 
   <Target Name="PackageUnsigned">
     <MSBuild Targets="Rebuild"

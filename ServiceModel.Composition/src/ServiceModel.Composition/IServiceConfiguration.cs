@@ -4,7 +4,7 @@
 
     /// <summary>
     /// Implements method that can be used to configure <see cref="System.ServiceModel.ServiceHost"/>.
-    /// Mark implementation class with<see cref="ExportServiceConfigurationAttribute"/>.
+    /// Mark implementation class with <see cref="ExportServiceConfigurationAttribute"/>.
     /// </summary>
     /// <remarks>
     /// Exported values are used by <see cref="ServiceCompositionHostFactoryBase" /> and <see cref="SelfHostingContainer" />.

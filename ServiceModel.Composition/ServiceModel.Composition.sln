@@ -60,6 +60,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceModel.Composition.Re
 		src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuspec = src\NuGet\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.nuspec
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{91F95461-3808-44FF-A789-AC756702A829}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition", "test\ServiceModel.Composition\ServiceModel.Composition.csproj", "{8ECA3D2F-701F-40A0-98FB-E600EA014553}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,10 +114,18 @@ Global
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00}.ReleaseNet40|Any CPU.Build.0 = ReleaseNet40|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.DebugNet40|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.DebugNet40|Any CPU.ActiveCfg = DebugNet40|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.ReleaseNet40|Any CPU.ActiveCfg = Release|Any CPU
+		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.ReleaseNet40|Any CPU.ActiveCfg = ReleaseNet40|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.Build.0 = Debug|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.ActiveCfg = Release|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,5 +137,6 @@ Global
 		{CB87960A-ED54-414E-AF5C-12CF53F69E00} = {430CB8DE-3A39-491E-9133-9DE0B6651235}
 		{3BDF98C1-8234-4BA1-97B6-AECBC7D42A36} = {077DF496-6D25-49E2-9295-8AFB22C8B772}
 		{4E3B1C24-8DBE-4680-8448-0BD3BA1AECF7} = {077DF496-6D25-49E2-9295-8AFB22C8B772}
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553} = {91F95461-3808-44FF-A789-AC756702A829}
 	EndGlobalSection
 EndGlobal

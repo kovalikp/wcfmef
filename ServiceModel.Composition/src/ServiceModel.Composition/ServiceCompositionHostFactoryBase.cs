@@ -13,6 +13,11 @@
     /// </summary>
     public abstract class ServiceCompositionHostFactoryBase : ServiceHostFactory
     {
+        internal ServiceHost CreateServiceHostInternal(Type serviceType, Uri[] baseAddresses)
+        {
+            return CreateServiceHost(serviceType, baseAddresses);
+        }
+        
         /// <summary>
         /// Creates a <see cref="ServiceCompositionHost"/> extension of <see cref="T:System.ServiceModel.ServiceHost" /> for a specified type of service with a specific base address.
         /// </summary>
@@ -24,9 +29,9 @@
         /// <exception cref="System.InvalidOperationException">
         /// The <see cref="M:ServiceModel.Composition.ServiceCompositionHostFactoryBase.GetContainer"/> method returns <see langword="null" />.
         /// </exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Object 'serviceHost' must not be disposed.")]
         protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
         {
+            // [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Object 'serviceHost' must not be disposed.")]
             var container = GetContainer();
 
             if (container == null)
@@ -34,19 +39,21 @@
                 throw new InvalidOperationException();
             }
 
+            ServiceCompositionHost serviceHostTemp = null;
             ServiceCompositionHost serviceHost = null;
-
             try
             {
-                serviceHost = new ServiceCompositionHost(container, serviceType, baseAddresses);
-                Configure(serviceHost, container);
-                serviceHost = null;
+                serviceHostTemp = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                Configure(serviceHostTemp, container);
+                serviceHost = serviceHostTemp;
+                serviceHostTemp = null;
             }
             finally
             {
-                if (serviceHost != null)
+                var disposable = serviceHostTemp as IDisposable;
+                if (serviceHostTemp != null)
                 {
-                    serviceHost.Close();
+                    disposable.Dispose();
                 }
             }
 

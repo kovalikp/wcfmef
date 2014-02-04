@@ -10,24 +10,3 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyProduct("ServiceModel.Composition")]
-[assembly: AssemblyMetadata("Serviceable", "True")]
-#if NET40
-
-namespace System.Reflection
-{
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = false)]
-    internal sealed class AssemblyMetadataAttribute : Attribute
-    {
-        public AssemblyMetadataAttribute(string key, string value)
-        {
-            Key = key;
-            Value = value;
-        }
-
-        public string Key { get; set; }
-
-        public string Value { get; set; }
-    }
-}
-
-#endif

@@ -30,7 +30,7 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// Causes service hosts to open asynchronosly.
+        /// Causes service hosts to open asynchronously.
         /// </summary>
         /// <returns>Return <see cref="Task"/>.</returns>
         public async Task OpenAsync()
@@ -39,7 +39,7 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// Causes service hosts to open asynchronosly.
+        /// Causes service hosts to open asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Return <see cref="Task"/>.</returns>
