@@ -187,7 +187,7 @@
                                 {
                                     var factory = new ServiceCompositionHostFactory(_container);
                                     var baseAddresses = export.Value.GetBaseAddresses(serviceType);
-                                    serviceHost = factory.CreateServiceHostInternal(serviceType, baseAddresses);
+                                    serviceHost = factory.CreateServiceHost(serviceType, baseAddresses);
                                     serviceHosts.Add(serviceHost);
                                     serviceHost = null;
                                 }

@@ -28,9 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <NonCoreProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.csproj">
+    <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.csproj">
       <RestorePackages>true</RestorePackages>
-    </NonCoreProjectToBuild>
+    </NonCoreProjectToBuild>-->
     <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
      <RestorePackages>true</RestorePackages>
    </NonCoreProjectToBuild>-->

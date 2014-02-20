@@ -50,6 +50,20 @@
         /// </value>
         public bool UsePerServiceInstancing { get; set; }
 
+        /// <summary>
+        /// Gets the type of attribute that was used to export the part.
+        /// </summary>
+        /// <value>
+        /// The type of the exporting attribute.
+        /// </value>
+        public Type ExportingType
+        {
+            get
+            {
+                return this.GetType();
+            }
+        }
+
         internal CompositionContainer Container { get; set; }
 
         /// <summary>

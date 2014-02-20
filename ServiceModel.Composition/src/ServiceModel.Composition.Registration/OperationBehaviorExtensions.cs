@@ -1,4 +1,5 @@
-﻿namespace ServiceModel.Composition.Registration
+﻿#if NET45
+namespace ServiceModel.Composition.Registration
 {
     using System;
     using System.Collections.Generic;
@@ -89,3 +90,4 @@
         }
     }
 }
+#endif

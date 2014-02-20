@@ -23,7 +23,7 @@
         private bool _filterCatalog;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositionInstanceContextExtension"/> class.
+        /// Initializes a new instance of the <see cref="CompositionInstanceContextExtension" /> class.
         /// </summary>
         /// <param name="filterCatalog">If set to <c>true</c> filter composition container catalog .</param>
         public CompositionInstanceContextExtension(bool filterCatalog)
@@ -36,8 +36,8 @@
         /// </summary>
         /// <param name="part">The part to compose.</param>
         /// <exception cref="InvalidOperationException">
-        /// Instance context composition container is not available.
-        /// The container is not initialized yet or it is already disposed.
+        /// Instance context composition container is not available. The container is not initialized yet or it is
+        /// already disposed.
         /// </exception>
         public void SatisfyImportsOnce(ComposablePart part)
         {
