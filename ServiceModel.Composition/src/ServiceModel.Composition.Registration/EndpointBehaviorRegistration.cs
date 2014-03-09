@@ -11,7 +11,7 @@ namespace ServiceModel.Composition.Registration
     /// <summary>
     /// Rule-based configuration for endpoint behavior.
     /// </summary>
-    public static class EndpointBehaviorExtensions
+    public static class EndpointBehaviorRegistration
     {
         /// <summary>
         /// Specifies that matching types should be exported as endpoint behavior for any endpoint.
@@ -45,39 +45,44 @@ namespace ServiceModel.Composition.Registration
         /// <typeparam name="T">Exported type.</typeparam>
         /// <param name="partBuilder">The part builder.</param>
         /// <param name="serviceType">Type of the service.</param>
-        /// <param name="operationBehaviorBuilder">The operation behavior builder.</param>
+        /// <param name="endpointBehaviorBuilder">The operation behavior builder.</param>
         /// <returns>The same <see cref="PartBuilder{T}"/> instance so that multiple calls can be chained.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Derived type required to check export contract type.")]
         public static PartBuilder<T> ExportEndpointBehavior<T>(
             this PartBuilder<T> partBuilder,
             Type serviceType,
-            Action<OperationBehaviorBuilder> operationBehaviorBuilder)
+            Action<EndpointBehaviorBuilder> endpointBehaviorBuilder)
             where T : IEndpointBehavior
         {
             if (partBuilder == null)
             {
                 throw new ArgumentNullException("partBuilder");
             }
+
+            var endpointBehavior = BuildEndpointBehavior(endpointBehaviorBuilder);
             
             partBuilder.Export<IEndpointBehavior>(x => x
                 .ContractTypeIdentity<IEndpointBehavior>()
                 .AddMetadata("ServiceType", serviceType)
-                .BuildOperationBehavior(operationBehaviorBuilder));
+                .AddMetadata("BindingNames", endpointBehavior.BindingNames)
+                .AddMetadata("BindingTypes", endpointBehavior.BindingTypes)
+                .AddMetadata("ContractNames", endpointBehavior.ContractNames)
+                .AddMetadata("ContractTypes", endpointBehavior.ContractTypes)
+                .AddMetadata("EndpointNames", endpointBehavior.EndpointNames));
             return partBuilder;
         }
 
-        internal static ExportBuilder BuildOperationBehavior(
-            this ExportBuilder exportBuilder,
-            Action<OperationBehaviorBuilder> operationBehaviorConfiguration)
+
+        internal static EndpointBehaviorBuilder BuildEndpointBehavior(
+            Action<EndpointBehaviorBuilder> endpointBehaviorConfiguration)
         {
-            if (operationBehaviorConfiguration == null)
+            var endpointBehaviorBuilder = new EndpointBehaviorBuilder();
+            if (endpointBehaviorConfiguration != null)
             {
-                return exportBuilder;
+                endpointBehaviorConfiguration(endpointBehaviorBuilder);
             }
 
-            var operationBehaviorBuilder = new OperationBehaviorBuilder(exportBuilder);
-            operationBehaviorConfiguration(operationBehaviorBuilder);
-            return exportBuilder;
+            return endpointBehaviorBuilder;
         }
     }
 }

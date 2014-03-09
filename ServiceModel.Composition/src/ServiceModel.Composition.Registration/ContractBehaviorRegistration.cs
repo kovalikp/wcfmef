@@ -9,41 +9,42 @@ namespace ServiceModel.Composition.Registration
     using System.ServiceModel.Description;
 
     /// <summary>
-    /// Rule-based configuration for service behavior.
+    /// Rule-based configuration for contract behavior.
     /// </summary>
-    public static class ServiceBehaviorExtensions
+    public static class ContractBehaviorRegistration
     {
         /// <summary>
-        /// Specifies that matching types should be exported as service behavior for any service.
+        /// Specifies so matching types should be exported as contract behavior for any contract.
         /// </summary>
         /// <typeparam name="T">Exported type.</typeparam>
         /// <param name="partBuilder">The part builder.</param>
         /// <returns>The same <see cref="PartBuilder{T}"/> instance so that multiple calls can be chained.</returns>
-        public static PartBuilder<T> ExportServiceBehavior<T>(this PartBuilder<T> partBuilder)
-            where T : IServiceBehavior
+        public static PartBuilder<T> ExportContractBehavior<T>(this PartBuilder<T> partBuilder)
+            where T : IContractBehavior
         {
-            return partBuilder.ExportServiceBehavior(null);
+            return partBuilder.ExportContractBehavior(null);
         }
 
         /// <summary>
-        /// Specifies that matching types should be exported as service behavior for specified service type.
+        /// Specifies that matching types should be exported as contract behavior for specified
+        /// service contract type.
         /// </summary>
         /// <typeparam name="T">Exported type.</typeparam>
         /// <param name="partBuilder">The part builder.</param>
-        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="serviceContractType">Type of the service contract.</param>
         /// <returns>The same <see cref="PartBuilder{T}"/> instance so that multiple calls can be chained.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Derived type required to check export contract type.")]
-        public static PartBuilder<T> ExportServiceBehavior<T>(this PartBuilder<T> partBuilder, Type serviceType)
-            where T : IServiceBehavior
+        public static PartBuilder<T> ExportContractBehavior<T>(this PartBuilder<T> partBuilder, Type serviceContractType)
+           where T : IContractBehavior
         {
             if (partBuilder == null)
             {
                 throw new ArgumentNullException("partBuilder");
             }
 
-            partBuilder.Export<IServiceBehavior>(x => x
-                .ContractTypeIdentity<IServiceBehavior>()
-                .AddMetadata("ServiceType", serviceType));
+            partBuilder.Export<IContractBehavior>(x => x
+                .ContractTypeIdentity<IContractBehavior>()
+                .AddMetadata("ServiceContractType", serviceContractType));
             return partBuilder;
         }
     }

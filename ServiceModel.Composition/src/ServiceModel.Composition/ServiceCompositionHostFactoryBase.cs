@@ -47,7 +47,7 @@
 
             if (serviceType == null)
             {
-                throw new InvalidOperationException("Could not find corresponding service type");
+                throw new InvalidOperationException("Could not find corresponding service type.");
             }
 
             return CreateServiceHost(serviceType.Value, baseAddresses);

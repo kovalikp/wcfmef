@@ -11,7 +11,7 @@ namespace ServiceModel.Composition.Registration
     /// <summary>
     /// Rule-based configuration for operation behavior.
     /// </summary>
-    public static class OperationBehaviorExtensions
+    public static class OperationBehaviorRegistration
     {
         /// <summary>
         /// Specifies that matching types should be exported as operation behavior for any contract type and operation name.

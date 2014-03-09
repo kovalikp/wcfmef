@@ -86,14 +86,21 @@
     <Compile Include="..\SharedAssemblyVersionInfo.cs">
       <Link>Properties\SharedAssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="BehaviorExtensions.cs" />
-    <Compile Include="ContractBehaviorExtensions.cs" />
-    <Compile Include="EndpointBehaviorExtensions.cs" />
+    <Compile Include="BehaviorRegistration.cs" />
+    <Compile Include="ConfigurationRegistration.cs" />
+    <Compile Include="ContractBehaviorRegistration.cs" />
+    <Compile Include="EndpointBehaviorRegistration.cs" />
     <Compile Include="OperationBehaviorBuilder.cs" />
-    <Compile Include="OperationBehaviorExtensions.cs" />
+    <Compile Include="OperationBehaviorRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceBehaviorExtensions.cs" />
-    <Compile Include="ServiceExtensions.cs" />
+    <Compile Include="ServiceBehaviorRegistration.cs" />
+    <Compile Include="ServiceRegistration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceModel.Composition\ServiceModel.Composition.csproj">
+      <Project>{d4af1521-7281-49b1-b9bb-e940682af4f2}</Project>
+      <Name>ServiceModel.Composition</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

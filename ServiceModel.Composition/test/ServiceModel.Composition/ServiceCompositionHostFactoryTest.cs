@@ -8,7 +8,7 @@ using Xunit;
 
 namespace ServiceModel.Composition
 {
-    public class Class1
+    public class ServiceCompositionHostFactoryTest
     {
         [Fact]
         public void Test()

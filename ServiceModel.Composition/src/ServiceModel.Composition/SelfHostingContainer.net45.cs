@@ -9,17 +9,13 @@ namespace ServiceModel.Composition
     using System.Threading;
     using System.Threading.Tasks;
 
-    /// <content>
-    /// Task based asynchronous methods.
-    /// </content>
+    /// <content>Task based asynchronous methods.</content>
     public partial class SelfHostingContainer
     {
         /// <summary>
         /// Gets the service hosts.
         /// </summary>
-        /// <value>
-        /// The service hosts.
-        /// </value>
+        /// <value>The service hosts.</value>
         public IReadOnlyCollection<ServiceHost> ServiceHosts
         {
             get
@@ -30,28 +26,9 @@ namespace ServiceModel.Composition
         }
 
         /// <summary>
-        /// Causes service hosts to open asynchronously.
-        /// </summary>
-        /// <returns>Return <see cref="Task"/>.</returns>
-        public async Task OpenAsync()
-        {
-            await OpenAsync(CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Causes service hosts to open asynchronously.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Return <see cref="Task"/>.</returns>
-        public async Task OpenAsync(CancellationToken cancellationToken)
-        {
-            await FromAsync(serviceHost => serviceHost.BeginOpen, serviceHost => serviceHost.EndOpen, cancellationToken).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Causes service hosts to close asynchronously.
         /// </summary>
-        /// <returns>Return <see cref="Task"/>.</returns>
+        /// <returns>Return <see cref="Task" />.</returns>
         public async Task CloseAsync()
         {
             await CloseAsync(CancellationToken.None);
@@ -61,15 +38,34 @@ namespace ServiceModel.Composition
         /// Causes service hosts to close asynchronously.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>Return <see cref="Task"/>.</returns>
+        /// <returns>Return <see cref="Task" />.</returns>
         public async Task CloseAsync(CancellationToken cancellationToken)
         {
             await FromAsync(serviceHost => serviceHost.BeginClose, serviceHost => serviceHost.EndClose, cancellationToken).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Causes service hosts to open asynchronously.
+        /// </summary>
+        /// <returns>Return <see cref="Task" />.</returns>
+        public async Task OpenAsync()
+        {
+            await OpenAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Causes service hosts to open asynchronously.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>Return <see cref="Task" />.</returns>
+        public async Task OpenAsync(CancellationToken cancellationToken)
+        {
+            await FromAsync(serviceHost => serviceHost.BeginOpen, serviceHost => serviceHost.EndOpen, cancellationToken).ConfigureAwait(false);
+        }
+
         private async Task FromAsync(
             Func<ServiceHost, Func<AsyncCallback, object, IAsyncResult>> beginMethod,
-            Func<ServiceHost, Action<IAsyncResult>> endMethod, 
+            Func<ServiceHost, Action<IAsyncResult>> endMethod,
             CancellationToken cancellationToken)
         {
             var tasks = new List<Task>();

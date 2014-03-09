@@ -28,7 +28,7 @@
     <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>
     </NoWarn>
     <CodeAnalysisRuleSet>..\Strict.ruleset</CodeAnalysisRuleSet>
@@ -128,7 +128,17 @@
     <Compile Include="ExportServiceRouteConfigurationAttribute.cs" />
     <Compile Include="FilteredCatalog.net40.cs" />
     <Compile Include="IServiceRouteConfiguration.cs" />
-    <Compile Include="SelfHostingContainer.net40.cs" />
+    <Compile Include="Registration\BehaviorRegistration.cs" />
+    <Compile Include="Registration\ConfigurationRegistration.cs" />
+    <Compile Include="Registration\ContractBehaviorRegistration.cs" />
+    <Compile Include="Registration\EndpointBehaviorRegistration.cs" />
+    <Compile Include="Registration\OperationBehaviorRegistration.cs" />
+    <Compile Include="Registration\EndpointBehaviorBuilder.cs" />
+    <Compile Include="Registration\ServiceBehaviorRegistration.cs" />
+    <Compile Include="Registration\ServiceRegistration.cs" />
+    <Compile Include="SelfHostingContainer.net40.cs">
+      <DependentUpon>SelfHostingContainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExportContractAttribute.cs" />
     <Compile Include="ExportContractBehaviorAttribute.cs" />
     <Compile Include="ExportContractTypeIdentityAttribute.cs" />
@@ -150,7 +160,9 @@
     <Compile Include="PerServiceInstanceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelfHostingContainer.cs" />
-    <Compile Include="SelfHostingContainer.net45.cs" />
+    <Compile Include="SelfHostingContainer.net45.cs">
+      <DependentUpon>SelfHostingContainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="ServiceCompositionHost.cs" />
     <Compile Include="ServiceCompositionHostFactory.cs" />
     <Compile Include="ServiceCompositionHostFactoryBase.cs" />
