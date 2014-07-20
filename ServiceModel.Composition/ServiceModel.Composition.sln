@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition", "src\ServiceModel.Composition\ServiceModel.Composition.csproj", "{D4AF1521-7281-49B1-B9BB-E940682AF4F2}"
 EndProject
@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceModel.Composition.Re
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{91F95461-3808-44FF-A789-AC756702A829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition", "test\ServiceModel.Composition\ServiceModel.Composition.csproj", "{8ECA3D2F-701F-40A0-98FB-E600EA014553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.Tests", "test\ServiceModel.Composition.Tests\ServiceModel.Composition.Tests.csproj", "{8ECA3D2F-701F-40A0-98FB-E600EA014553}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,12 +123,12 @@ Global
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.ReleaseNet40|Any CPU.ActiveCfg = ReleaseNet40|Any CPU
 		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.ActiveCfg = Debug|Any CPU
-		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.Build.0 = Debug|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.ActiveCfg = DebugNet40|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.DebugNet40|Any CPU.Build.0 = DebugNet40|Any CPU
 		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.ActiveCfg = Release|Any CPU
-		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.Build.0 = Release|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.ActiveCfg = ReleaseNet40|Any CPU
+		{8ECA3D2F-701F-40A0-98FB-E600EA014553}.ReleaseNet40|Any CPU.Build.0 = ReleaseNet40|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

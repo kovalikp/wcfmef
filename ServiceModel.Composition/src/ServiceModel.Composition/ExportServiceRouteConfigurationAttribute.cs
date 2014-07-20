@@ -10,7 +10,7 @@
 
     /// <summary>
     /// Exports implementation of <see cref="IServiceRouteConfiguration"/> for target services.
-    /// Target services must be specified to make them discoverable by <see cref="ServiceRouteContainer"/>.
+    /// Target services must be specified to make them discoverable by <see cref="ServiceRouteExtensions"/>.
     /// </summary>
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
@@ -47,7 +47,7 @@
         }
 
         /// <summary>
-        /// Gets the service types that will be exported by <see cref="ServiceRouteContainer"/>.
+        /// Gets the service types that will be exported by <see cref="ServiceRouteExtensions"/>.
         /// </summary>
         /// <value>
         /// The service types.

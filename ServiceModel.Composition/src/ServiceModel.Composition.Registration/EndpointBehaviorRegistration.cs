@@ -22,7 +22,9 @@ namespace ServiceModel.Composition.Registration
         public static PartBuilder<T> ExportEndpointBehavior<T>(this PartBuilder<T> partBuilder)
             where T : IEndpointBehavior
         {
-            return partBuilder.ExportEndpointBehavior(null, null);
+            partBuilder.ExportEndpointBehavior(null, null);
+
+            return partBuilder;
         }
 
         /// <summary>
@@ -35,7 +37,9 @@ namespace ServiceModel.Composition.Registration
         public static PartBuilder<T> ExportEndpointBehavior<T>(this PartBuilder<T> partBuilder, Type serviceType)
             where T : IEndpointBehavior
         {
-            return partBuilder.ExportEndpointBehavior(serviceType, null);
+            partBuilder.ExportEndpointBehavior(serviceType, null);
+
+            return partBuilder;
         }
 
         /// <summary>
@@ -69,6 +73,7 @@ namespace ServiceModel.Composition.Registration
                 .AddMetadata("ContractNames", endpointBehavior.ContractNames)
                 .AddMetadata("ContractTypes", endpointBehavior.ContractTypes)
                 .AddMetadata("EndpointNames", endpointBehavior.EndpointNames));
+            
             return partBuilder;
         }
 

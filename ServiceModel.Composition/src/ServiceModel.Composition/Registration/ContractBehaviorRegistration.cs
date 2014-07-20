@@ -8,14 +8,31 @@
     using System.Linq;
     using System.ServiceModel.Description;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ContractBehaviorRegistration
     {
+        /// <summary>
+        /// Adds the export contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <returns></returns>
         public static ComposablePart AddExportContractBehavior(this CompositionBatch batch, 
             IContractBehavior exportedValue)
         {
             return batch.AddExportContractBehavior(exportedValue, null);
         }
 
+        /// <summary>
+        /// Adds the export contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceContractType">Type of the service contract.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">batch</exception>
         public static ComposablePart AddExportContractBehavior(this CompositionBatch batch, 
             IContractBehavior exportedValue, 
             Type serviceContractType)

@@ -45,6 +45,7 @@ namespace ServiceModel.Composition.Registration
             partBuilder.Export<IContractBehavior>(x => x
                 .ContractTypeIdentity<IContractBehavior>()
                 .AddMetadata("ServiceContractType", serviceContractType));
+
             return partBuilder;
         }
     }

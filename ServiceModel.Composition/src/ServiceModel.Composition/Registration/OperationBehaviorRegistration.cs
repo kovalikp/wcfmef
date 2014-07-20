@@ -8,8 +8,17 @@
     using System.Linq;
     using System.ServiceModel.Description;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class OperationBehaviorRegistration
     {
+        /// <summary>
+        /// Adds the export contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <returns></returns>
         public static ComposablePart AddExportContractBehavior(
             this CompositionBatch batch,
             IOperationBehavior exportedValue)
@@ -17,6 +26,13 @@
             return batch.AddOperationContractBehavior(exportedValue, null, null);
         }
 
+        /// <summary>
+        /// Adds the operation contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceContractType">Type of the service contract.</param>
+        /// <returns></returns>
         public static ComposablePart AddOperationContractBehavior(
             this CompositionBatch batch,
             IOperationBehavior exportedValue,
@@ -25,15 +41,37 @@
             return batch.AddOperationContractBehavior(exportedValue, serviceContractType, null);
         }
 
+        /// <summary>
+        /// Adds the operation contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceContractType">Type of the service contract.</param>
+        /// <param name="operationNames">The operation names.</param>
+        /// <returns></returns>
         public static ComposablePart AddOperationContractBehavior(
             this CompositionBatch batch,
             IOperationBehavior exportedValue,
             Type serviceContractType,
             IEnumerable<string> operationNames)
         {
+            if (operationNames == null)
+            {
+                    operationNames = Enumerable.Empty<string>();
+            }
+
             return batch.AddOperationContractBehavior(exportedValue, serviceContractType, operationNames.ToArray());
         }
 
+        /// <summary>
+        /// Adds the operation contract behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceContractType">Type of the service contract.</param>
+        /// <param name="operationNames">The operation names.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">batch</exception>
         public static ComposablePart AddOperationContractBehavior(
             this CompositionBatch batch,
             IOperationBehavior exportedValue,

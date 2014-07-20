@@ -8,8 +8,17 @@
     using System.Linq;
     using System.ServiceModel.Description;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class EndpointBehaviorRegistration
     {
+        /// <summary>
+        /// Adds the export endpoint behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <returns></returns>
         public static ComposablePart AddExportEndpointBehavior(
             this CompositionBatch batch,
             IEndpointBehavior exportedValue)
@@ -17,6 +26,13 @@
             return batch.AddExportEndpointBehavior(exportedValue, null, null);
         }
 
+        /// <summary>
+        /// Adds the export endpoint behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns></returns>
         public static ComposablePart AddExportEndpointBehavior(this CompositionBatch batch,
             IEndpointBehavior exportedValue,
             Type serviceType)
@@ -24,6 +40,15 @@
             return batch.AddExportEndpointBehavior(exportedValue, serviceType, null);
         }
 
+        /// <summary>
+        /// Adds the export endpoint behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <param name="endpointBehaviorBuilder">The endpoint behavior builder.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">batch</exception>
         public static ComposablePart AddExportEndpointBehavior(
             this CompositionBatch batch,
             IEndpointBehavior exportedValue,

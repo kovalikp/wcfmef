@@ -13,6 +13,12 @@
     /// </summary>
     public static class ServiceBehaviorRegistration
     {
+        /// <summary>
+        /// Exports the service behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <returns></returns>
         public static ComposablePart ExportServiceBehavior(
             this CompositionBatch batch, 
             IServiceBehavior exportedValue)
@@ -20,6 +26,14 @@
             return batch.ExportServiceBehavior(exportedValue, null);
         }
 
+        /// <summary>
+        /// Exports the service behavior.
+        /// </summary>
+        /// <param name="batch">The batch.</param>
+        /// <param name="exportedValue">The exported value.</param>
+        /// <param name="serviceType">Type of the service.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">batch</exception>
         public static ComposablePart ExportServiceBehavior(
             this CompositionBatch batch, 
             IServiceBehavior exportedValue, 

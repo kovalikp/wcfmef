@@ -11,7 +11,7 @@
     /// Mark implementing class with <see cref="ExportServiceRouteConfigurationAttribute" />.
     /// </summary>
     /// <remarks>
-    /// Exported values are used by <see cref="ServiceRouteContainer" />.
+    /// Exported values are used by <see cref="ServiceRouteExtensions" />.
     /// </remarks>
     public interface IServiceRouteConfiguration
     {

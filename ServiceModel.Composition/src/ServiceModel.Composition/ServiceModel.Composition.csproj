@@ -167,7 +167,7 @@
     <Compile Include="ServiceCompositionHostFactory.cs" />
     <Compile Include="ServiceCompositionHostFactoryBase.cs" />
     <Compile Include="DirectoryCatalogSharedContainerFactory.cs" />
-    <Compile Include="ServiceRouteContainer.cs" />
+    <Compile Include="ServiceRouteExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\PublicKey.snk">

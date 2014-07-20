@@ -25,15 +25,21 @@
       <DelaySigning>true</DelaySigning>
       <IgnoreConfiguration>.*Net40</IgnoreConfiguration>
     </ProjectToBuild>
+    <ProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.Tests.csproj">
+    </ProjectToBuild>
   </ItemGroup>
 
   <ItemGroup>
-    <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.csproj">
+    <NonCoreProjectToBuild Include="test\ServiceModel.Composition.Tests\ServiceModel.Composition.Tests.csproj">
       <RestorePackages>true</RestorePackages>
-    </NonCoreProjectToBuild>-->
+    </NonCoreProjectToBuild>
     <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
      <RestorePackages>true</RestorePackages>
    </NonCoreProjectToBuild>-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <XunitAssembly Include="test\ServiceModel.Composition\bin\$(Configuration)\ServiceModel.CompositionTests.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -113,7 +119,7 @@
   </Target>
 
   <UsingTask TaskName="Xunit.Runner.MSBuild.xunit"
-           AssemblyFile="packages\xunit.core.2.0.0-alpha-build2576\lib\net45\xunit.runner.msbuild.dll" />
+           AssemblyFile="packages\xunit.runners.2.0.0-beta-build2700\tools\xunit.runner.msbuild.dll" />
 
   <Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
     <xunit Assemblies="@(XunitAssembly)" Xml="$(OutputPath)TestResults.xml" />

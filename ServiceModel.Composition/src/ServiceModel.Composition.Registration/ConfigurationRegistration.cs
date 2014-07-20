@@ -67,7 +67,9 @@
                 throw new ArgumentNullException("partBuilder");
             }
 
-            return partBuilder.ExportServiceConfiguration(null);
+            partBuilder.ExportServiceConfiguration(null);
+
+            return partBuilder;
         }
 
         /// <summary>
@@ -95,7 +97,7 @@
         }
 
         /// <summary>
-        /// Exports configuration for <see cref="ServiceRouteContainer"/>.
+        /// Exports configuration for <see cref="ServiceRouteExtensions"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="partBuilder">The part builder.</param>
@@ -110,11 +112,13 @@
                 throw new ArgumentNullException("partBuilder");
             }
 
-            return partBuilder.ExportServiceRouteConfiguration(null);
+            partBuilder.ExportServiceRouteConfiguration(null);
+            
+            return partBuilder;
         }
 
         /// <summary>
-        /// Exports configuration for <see cref="ServiceRouteContainer"/>.
+        /// Exports configuration for <see cref="ServiceRouteExtensions"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="partBuilder">The part builder.</param>
