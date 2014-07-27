@@ -25,7 +25,7 @@
       <DelaySigning>true</DelaySigning>
       <IgnoreConfiguration>.*Net40</IgnoreConfiguration>
     </ProjectToBuild>
-    <ProjectToBuild Include="test\ServiceModel.Composition\ServiceModel.Composition.Tests.csproj">
+    <ProjectToBuild Include="test\ServiceModel.Composition.Tests\ServiceModel.Composition.Tests.csproj">
     </ProjectToBuild>
   </ItemGroup>
 
@@ -34,12 +34,12 @@
       <RestorePackages>true</RestorePackages>
     </NonCoreProjectToBuild>
     <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
-     <RestorePackages>true</RestorePackages>
+     <RestorePackages>true</RestorePackages>  
    </NonCoreProjectToBuild>-->
   </ItemGroup>
 
   <ItemGroup>
-    <XunitAssembly Include="test\ServiceModel.Composition\bin\$(Configuration)\ServiceModel.CompositionTests.dll" />
+    <XunitAssembly Include="test\ServiceModel.Composition.Tests\bin\$(Configuration)\ServiceModel.Composition.Tests.dll" />
   </ItemGroup>
 
   <ItemGroup>

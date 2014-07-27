@@ -2,4 +2,5 @@
 <assemblies defaultPublicKeyToken="3c63a49a926eba28">
   <assembly name="ServiceModel.Composition" />
   <assembly name="ServiceModel.Composition.Registration" />
+  <assembly name="ServiceModel.Composition.Tests" />
 </assemblies>

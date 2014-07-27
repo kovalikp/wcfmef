@@ -6,7 +6,4 @@ using System.Threading.Tasks;
 
 namespace ServiceModel.Composition.Tests
 {
-    public interface ITestService
-    {
-    }
 }

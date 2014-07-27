@@ -12,17 +12,30 @@ namespace ServiceModel.Composition.Tests
 {
     public class ServiceCompositionHostFactoryTest
     {
+        
         [Fact]
-        public void Test()
+        public void CreateServiceHost()
         {
-            var catalog = new TypeCatalog(typeof(TestService));
+            var catalog = new TypeCatalog(typeof(FooService));
+            var container = new CompositionContainer(catalog);
+            var factory = new ServiceCompositionHostFactory(container);
+            var result = factory.CreateServiceHost(typeof(FooService).FullName, new Uri[] { });
+            Assert.NotNull(result);
+            Assert.IsType<ServiceCompositionHost>(result);
+            Assert.Equal(result.Description.ServiceType, typeof(FooService));
+        }
+        
+        [Fact]
+        public void CreateServiceHostWithContractName()
+        {
+            var catalog = new TypeCatalog(typeof(BarService));
             var container = new CompositionContainer(catalog);
             //container.ComposeExportedValue()
-            CompositionBatch batch = new CompositionBatch();
-            var foo = container.GetExports<TestService>();
             var factory = new ServiceCompositionHostFactory(container);
-            var result = factory.CreateServiceHost("ServiceModel.Composition.TestService", new Uri[] { });
+            var result = factory.CreateServiceHost(typeof(BarService).FullName, new Uri[] { });
             Assert.NotNull(result);
+            Assert.IsType<ServiceCompositionHost>(result);
+            Assert.Equal(result.Description.ServiceType, typeof(BarService));
         }
     }
 }
