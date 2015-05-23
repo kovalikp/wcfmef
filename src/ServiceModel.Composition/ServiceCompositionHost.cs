@@ -13,13 +13,26 @@
     /// Provides a composition host for services.
     /// </summary>
     /// <remarks>
-    /// Services with <see cref="ServiceBehaviorAttribute.InstanceContextMode"/> set to <see cref="InstanceContextMode.Single"/>
+    /// Services with <see cref="ServiceBehaviorAttribute.InstanceContextMode" /> set to <see cref="InstanceContextMode.Single" />
     /// require default constructor. Service object will be exported on opening and set using
-    /// <see cref="ServiceBehaviorAttribute.SetWellKnownSingleton(object)"/>.
+    /// <see cref="ServiceBehaviorAttribute.SetWellKnownSingleton(object)" />.
     /// </remarks>
     public class ServiceCompositionHost : ServiceHost
     {
         private CompositionContainer _container;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceCompositionHost"/> class with specified composition container 
+        /// the instance of the service and its base addresses specified.
+        /// </summary>
+        /// <param name="container">The container.</param>
+        /// <param name="singletonInstance">The singleton instance.</param>
+        /// <param name="baseAddresses">The base addresses.</param>
+        public ServiceCompositionHost(CompositionContainer container, object singletonInstance, Uri[] baseAddresses)
+            : base(singletonInstance, baseAddresses)
+        {
+            this._container = container;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCompositionHost"/> class
@@ -50,23 +63,40 @@
 
             ApplyOperationBehaviors();
 
-            ServiceBehaviorAttribute serviceBehavior = Description.Behaviors.Find<ServiceBehaviorAttribute>();
-            if (serviceBehavior != null && serviceBehavior.InstanceContextMode == InstanceContextMode.Single)
-            {
-                var singleton = _container.ExportService(this.Description.ServiceType);
-                serviceBehavior.SetWellKnownSingleton(singleton);
-            }
-            else
+            if (this.SingletonInstance == null)
             {
                 ApplyExportBehavior();
             }
         }
 
-        private IEnumerable<ExportContractAttribute> YieldExportServiceAttribute(KeyedCollection<Type, IContractBehavior> contractBehaviors)
+        private void ApplyContractBehaviors()
         {
-            if (contractBehaviors.Contains(typeof(ExportContractAttribute)))
+            var behaviorExports = _container.GetExports<IContractBehavior, Meta<TargetContracts>>();
+
+            foreach (var behavior in behaviorExports)
             {
-                yield return contractBehaviors[typeof(ExportContractAttribute)] as ExportContractAttribute;
+                foreach (var contractDescription in ImplementedContracts.Values)
+                {
+                    if (behavior.Metadata.MatchesExport(contractDescription))
+                    {
+                        contractDescription.Behaviors.Add(behavior.Value);
+                    }
+                }
+            }
+        }
+
+        private void ApplyEndpointBehaviors()
+        {
+            var behaviorExports = _container.GetExports<IEndpointBehavior, Meta<TargetEndpoints>>();
+            foreach (var endpoint in this.Description.Endpoints)
+            {
+                foreach (var behavior in behaviorExports)
+                {
+                    if (behavior.Metadata.MatchesExport(Description, endpoint))
+                    {
+                        endpoint.Behaviors.Add(behavior.Value);
+                    }
+                }
             }
         }
 
@@ -97,50 +127,6 @@
             }
         }
 
-        private void ApplyServiceBehaviors()
-        {
-            var behaviorExports = _container.GetExports<IServiceBehavior, Meta<TargetServices>>();
-
-            foreach (var behavior in behaviorExports)
-            {
-                if (behavior.Metadata.MatchesExport(Description))
-                {
-                    Description.Behaviors.Add(behavior.Value);
-                }
-            }
-        }
-
-        private void ApplyEndpointBehaviors()
-        {
-            var behaviorExports = _container.GetExports<IEndpointBehavior, Meta<TargetEndpoints>>();
-            foreach (var endpoint in this.Description.Endpoints)
-            {
-                foreach (var behavior in behaviorExports)
-                {
-                    if (behavior.Metadata.MatchesExport(Description, endpoint))
-                    {
-                        endpoint.Behaviors.Add(behavior.Value);
-                    }
-                }
-            }
-        }
-
-        private void ApplyContractBehaviors()
-        {
-            var behaviorExports = _container.GetExports<IContractBehavior, Meta<TargetContracts>>();
-
-            foreach (var behavior in behaviorExports)
-            {
-                foreach (var contractDescription in ImplementedContracts.Values)
-                {
-                    if (behavior.Metadata.MatchesExport(contractDescription))
-                    {
-                        contractDescription.Behaviors.Add(behavior.Value);
-                    }
-                }
-            }
-        }
-
         private void ApplyOperationBehaviors()
         {
             var behaviorExports = _container.GetExports<IOperationBehavior, Meta<TargetOperations>>();
@@ -157,6 +143,27 @@
                         }
                     }
                 }
+            }
+        }
+
+        private void ApplyServiceBehaviors()
+        {
+            var behaviorExports = _container.GetExports<IServiceBehavior, Meta<TargetServices>>();
+
+            foreach (var behavior in behaviorExports)
+            {
+                if (behavior.Metadata.MatchesExport(Description))
+                {
+                    Description.Behaviors.Add(behavior.Value);
+                }
+            }
+        }
+
+        private IEnumerable<ExportContractAttribute> YieldExportServiceAttribute(KeyedCollection<Type, IContractBehavior> contractBehaviors)
+        {
+            if (contractBehaviors.Contains(typeof(ExportContractAttribute)))
+            {
+                yield return contractBehaviors[typeof(ExportContractAttribute)] as ExportContractAttribute;
             }
         }
     }

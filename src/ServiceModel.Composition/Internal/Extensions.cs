@@ -6,11 +6,22 @@
     using System.ComponentModel.Composition.Hosting;
     using System.ComponentModel.Composition.Primitives;
     using System.Linq;
+    using System.Reflection;
     using System.ServiceModel;
     using System.ServiceModel.Description;
 
     internal static class Extensions
     {
+        internal static void ConfigureServiceHost(this IEnumerable<Lazy<IServiceConfiguration, Meta<TargetServices>>> exportedConfigurations, ServiceHost serviceHost)
+        {
+            var configurations = exportedConfigurations
+                .Where(x => x.Metadata.MatchesExport(serviceHost.Description));
+            foreach (var configuration in configurations)
+            {
+                configuration.Value.Configure(serviceHost);
+            }
+        }
+
         internal static object ExportService(this CompositionContainer container, Type exportType)
         {
             return container.ExportService(AttributedModelServices.GetContractName(exportType), exportType);
@@ -40,6 +51,39 @@
             }
 
             return export.Value;
+        }
+
+        internal static InstanceContextMode GetInstanceContextMode(this Type serviceType)
+        {
+            var serviceBehaviorAttribute = serviceType.GetCustomAttributesData()
+                .FirstOrDefault(x => x.Constructor.DeclaringType == typeof(ServiceBehaviorAttribute));
+
+            if (serviceBehaviorAttribute == null)
+            {
+                return default(InstanceContextMode);
+            }
+
+            var namedArguments =
+                serviceBehaviorAttribute.NamedArguments ?? Enumerable.Empty<CustomAttributeNamedArgument>();
+            var instanceContextModeArgument = namedArguments
+                .FirstOrDefault(x => x.MemberInfo.Name == "InstanceContextMode");
+
+            return (InstanceContextMode)instanceContextModeArgument.TypedValue.Value;
+        }
+
+        internal static bool IsNotNullAndContains<T>(this T[] array, T item)
+        {
+            return array != null && array.Contains(item);
+        }
+
+        internal static bool IsNullOrEmpty<T>(this T[] array)
+        {
+            return array == null || array.Length == 0;
+        }
+
+        internal static bool IsNullOrEmptyOrContains<T>(this T[] array, T item)
+        {
+            return array == null || array.Length == 0 || array.Contains(item);
         }
 
         internal static bool MatchesExport(this Meta<TargetServices> targetServices, ServiceDescription serviceDescription)
@@ -94,31 +138,6 @@
             var matchContractType = targetOperations.ServiceContractType == null || targetOperations.ServiceContractType == contractDescription.ContractType;
             var matchOperationName = targetOperations.OperationNames.IsNullOrEmptyOrContains(operationDescription.Name);
             return matchContractType && matchOperationName;
-        }
-
-        internal static bool IsNullOrEmpty<T>(this T[] array)
-        {
-            return array == null || array.Length == 0;
-        }
-
-        internal static bool IsNullOrEmptyOrContains<T>(this T[] array, T item)
-        {
-            return array == null || array.Length == 0 || array.Contains(item);
-        }
-
-        internal static bool IsNotNullAndContains<T>(this T[] array, T item)
-        {
-            return array != null && array.Contains(item);
-        }
-
-        internal static void ConfigureServiceHost(this IEnumerable<Lazy<IServiceConfiguration, Meta<TargetServices>>> exportedConfigurations, ServiceHost serviceHost)
-        {
-            var configurations = exportedConfigurations
-                .Where(x => x.Metadata.MatchesExport(serviceHost.Description)); 
-            foreach (var configuration in configurations)
-            {
-                configuration.Value.Configure(serviceHost);
-            }
         }
     }
 }

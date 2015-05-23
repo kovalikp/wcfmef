@@ -20,7 +20,7 @@ Project global pre-settings.
   </PropertyGroup>
 
   <PropertyGroup>
-    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">false</StyleCopEnabled>
+    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">true</StyleCopEnabled>
     <StyleCopOverrideSettingsFile>$(RepositoryRoot)src\Settings.StyleCop</StyleCopOverrideSettingsFile>
   </PropertyGroup>
 

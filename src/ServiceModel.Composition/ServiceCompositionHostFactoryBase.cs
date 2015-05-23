@@ -24,7 +24,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// The <see cref="M:ServiceModel.Composition.ServiceCompositionHostFactoryBase.GetContainer"/> method returns <see langword="null" />.
         /// </exception>
-        protected override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
+        protected sealed override ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses)
         {
             var container = GetContainer();
 
@@ -38,7 +38,22 @@
 
             try
             {
-                serviceHostTemp = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                var instanceContextMode = serviceType.GetInstanceContextMode();
+
+                switch (instanceContextMode)
+                {
+                    case InstanceContextMode.PerSession:
+                        serviceHostTemp = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                        break;
+                    case InstanceContextMode.PerCall:
+                        serviceHostTemp = new ServiceCompositionHost(container, serviceType, baseAddresses);
+                        break;
+                    case InstanceContextMode.Single:
+                        var singleton = container.ExportService(serviceType);
+                        serviceHostTemp = new ServiceCompositionHost(container, singleton, baseAddresses);
+                        break;
+                }
+
                 Configure(serviceHostTemp, container);
                 serviceHost = serviceHostTemp;
                 serviceHostTemp = null;
