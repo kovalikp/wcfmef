@@ -1,2 +1,2 @@
 @ECHO OFF
-%SystemRoot%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe "%~dp0\ServiceModel.Composition.proj" /v:m /maxcpucount /nodeReuse:false %*
+"%ProgramFiles%\MSBuild\12.0\bin\MSBuild.exe" "%~dp0\build.proj" /v:m /maxcpucount /nodeReuse:false %*

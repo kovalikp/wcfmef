@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Clean;Test;Package" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
-    <Platform>AnyCPU</Platform>
+    <Platform>Any CPU</Platform>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildThisFileDirectory)</SolutionDir>
     <BuildProperties>Platform=$(Platform);SolutionDir=$(SolutionDir)</BuildProperties>
     <BuildProperties Condition="'$(InternalsInvisible)' != ''">$(BuildProperties);InternalsInvisible=$(InternalsInvisible)</BuildProperties>
@@ -10,20 +10,9 @@
     <BuildProperties Condition="'$(StyleCopEnabled)' != ''">$(BuildProperties);StyleCopEnabled=$(StyleCopEnabled)</BuildProperties>
   </PropertyGroup>
 
-  <PropertyGroup Condition="!Exists('$(PrivateKey)')">
-    <PackageDependsOn>PackageUnsigned</PackageDependsOn>
-  </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(PrivateKey)')">
-    <PackageDependsOn>PackageSigned</PackageDependsOn>
-  </PropertyGroup>
-
   <ItemGroup>
-    <ProjectToBuild Include="src\ServiceModel.Composition\ServiceModel.Composition.csproj">
+    <ProjectToBuild Include="ServiceModel.Composition.sln">
       <DelaySigning>true</DelaySigning>
-    </ProjectToBuild>
-    <ProjectToBuild Include="src\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.csproj">
-      <DelaySigning>true</DelaySigning>
-      <IgnoreConfiguration>.*Net40</IgnoreConfiguration>
     </ProjectToBuild>
   </ItemGroup>
 
@@ -37,30 +26,15 @@
     <ProjectToBuild Include="@(NonCoreProjectToBuild)" Condition="'$(BuildCoreOnly)' != 'true'" />
   </ItemGroup>
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props" />
+  <!--<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props" />-->
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 
-  <Target Name="ProjectWithConfigurationToBuild" Outputs="@(ProjectWithConfigurationToBuild)">
-    <ItemGroup>
-      <ProjectToBuildCartesian Include="@(ProjectToBuild)">
-        <BuildConfiguration>%(BuildConfiguration.Identity)</BuildConfiguration>
-      </ProjectToBuildCartesian>
-      <ProjectWithConfigurationToBuild
-        Include="@(ProjectToBuildCartesian)"
-        Condition="('%(ProjectToBuildCartesian.IgnoreConfiguration)' == '') Or (!$([System.Text.RegularExpressions.Regex]::IsMatch('%(ProjectToBuildCartesian.BuildConfiguration)', '%(ProjectToBuildCartesian.IgnoreConfiguration)')))">
-      </ProjectWithConfigurationToBuild>
-    </ItemGroup>
-  </Target>
 
-  <Target Name="Clean" DependsOnTargets="ProjectWithConfigurationToBuild">
+  <Target Name="Clean">
     <MSBuild Targets="Clean"
-             Projects="@(ProjectWithConfigurationToBuild)"
-             Properties="Configuration=%(ProjectWithConfigurationToBuild.BuildConfiguration);$(BuildProperties)"
+             Projects="@(ProjectToBuild)"
+             Properties="Configuration=$(Configuration);$(BuildProperties)"
              BuildInParallel="true" />
-    <MSBuild Targets="Clean"
-             Projects="src\NuGet\NuGet.proj"
-             Properties="Configuration=$(Configuration)"
-             Condition="'$(Configuration)' == '$(Configuration45)'" />
   </Target>
 
   <Target Name="RestorePackages">
@@ -83,10 +57,10 @@
           LogStandardErrorAsError="true" />
   </Target>
 
-  <Target Name="Build" DependsOnTargets="ProjectWithConfigurationToBuild;RestoreSolutionPackages">
+  <Target Name="Build" DependsOnTargets="RestoreSolutionPackages">
     <MSBuild Targets="Build"
-             Projects="@(ProjectWithConfigurationToBuild)"
-             Properties="Configuration=%(ProjectWithConfigurationToBuild.BuildConfiguration);$(BuildProperties)"
+             Projects="@(ProjectToBuild)"
+             Properties="Configuration=$(Configuration);$(BuildProperties)"
              BuildInParallel="true">
       <Output ItemName="ProjectBuilt" TaskParameter="TargetOutputs"/>
     </MSBuild>
@@ -112,36 +86,6 @@
   <Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
     <!--<MSBuild Projects="tools\xUnit.targets"
             Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
-  </Target>
-
-  <Target Name="PackageUnsigned">
-    <MSBuild Targets="Rebuild"
-             Projects="$(MSBuildThisFileFullPath)"
-             Properties="Configuration=$(Configuration);$(BuildProperties);BuildCoreOnly=true;InternalsInvisible=true;RunCodeAnalysis=false;StyleCopEnabled=false" />
-    <MSBuild Targets="Build"
-             Projects="src\NuGet\NuGet.proj"
-             Properties="Configuration=$(Configuration)"
-             Condition="'$(Configuration)' == '$(Configuration45)'" />
-  </Target>
-  
-  <Target Name="PackageSigned">
-    <Error Text="Unable to locate private key: '$(PrivateKey)'" Condition="!Exists('$(PrivateKey)')" />
-    <MSBuild Targets="Rebuild"
-             Projects="$(MSBuildThisFileFullPath)"
-             Properties="Configuration=$(Configuration);$(BuildProperties);BuildCoreOnly=true;InternalsInvisible=true;RunCodeAnalysis=false;StyleCopEnabled=false">
-      <Output ItemName="ProjectBuilt" TaskParameter="TargetOutputs" />
-    </MSBuild>
-    <MSBuild Targets="SignAssembly"
-             Projects="tools\DelaySigning.targets"
-             Properties="ProjectToSign=%(ProjectBuilt.Identity)"
-             Condition="'%(ProjectBuilt.DelaySigning)' == 'true'" />
-    <MSBuild Targets="Build"
-             Projects="src\NuGet\NuGet.proj"
-             Properties="Configuration=$(Configuration)"
-             Condition="'$(Configuration)' == '$(Configuration45)'" />
-  </Target>
-  
-  <Target Name="Package" DependsOnTargets="$(PackageDependsOn)">
   </Target>
 
   <Target Name="CodeCoverage" DependsOnTargets="RestoreSolutionPackages;Build">
