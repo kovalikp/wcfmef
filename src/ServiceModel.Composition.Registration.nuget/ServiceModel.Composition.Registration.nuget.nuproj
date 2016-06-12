@@ -14,7 +14,7 @@
     <ProjectGuid>50c8446e-1d3c-4100-97ec-60cec48be230</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
+    <NuProjPath>$(UserProfile)\.nuget\packages\NuProj\0.10.48-beta-gea4a31bbc5\tools\</NuProjPath>
   </PropertyGroup>
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
@@ -38,6 +38,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ServiceModel.Composition.nuget\ServiceModel.Composition.nuget.nuproj" />
     <ProjectReference Include="..\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />
 </Project>

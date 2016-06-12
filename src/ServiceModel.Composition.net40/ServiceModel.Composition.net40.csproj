@@ -20,7 +20,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props" />
+  <Import Project="$(SolutionDir)tools\ServiceModel.Composition.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
@@ -102,12 +102,7 @@
     <AdditionalFiles Include="..\stylecop.json">
       <Link>stylecop.json</Link>
     </AdditionalFiles>
-    <None Include="packages.ServiceModel.Composition.net40.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
-    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
