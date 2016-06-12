@@ -7,10 +7,10 @@
       "documentPrivateFields": false,
       "companyName": "Pavol Kovalik",
       "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
-      "xmlHeader": true,
+      "xmlHeader": false,
       "variables": {
-        "licenseName": "MS-PL",
-        "licenseFile": "License.txt"
+        "licenseName": "MIT",
+        "licenseFile": "LICENSE"
       }
     }
   }

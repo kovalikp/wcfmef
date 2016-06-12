@@ -1,4 +1,7 @@
-﻿namespace ServiceModel.Composition.Registration
+﻿// Copyright (c) Pavol Kovalik. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace ServiceModel.Composition.Registration
 {
     using System;
     using System.Collections.Generic;
