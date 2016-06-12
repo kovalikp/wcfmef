@@ -41,8 +41,8 @@
     <EmbedSourceFiles>true</EmbedSourceFiles>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ServiceModel.Composition.net40\ServiceModel.Composition.net40.csproj" />
     <ProjectReference Include="..\ServiceModel.Composition\ServiceModel.Composition.csproj" />
-    <ProjectReference Include="..\ServiceModel.Composition\ServiceModel.Composition.net40.csproj" />
   </ItemGroup>
   <Import Project="$(NuProjPath)\NuProj.targets" />
 </Project>

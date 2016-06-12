@@ -17,9 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHostedService", "samples
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{16B115C5-2372-491F-8A0A-CE4AAB1E2059}"
 	ProjectSection(SolutionItems) = preProject
-		build.cmd = build.cmd
-		build.proj = build.proj
-		src\Settings.StyleCop = src\Settings.StyleCop
 		src\SharedAssemblyInfo.cs = src\SharedAssemblyInfo.cs
 		src\SharedAssemblyVersionInfo.cs = src\SharedAssemblyVersionInfo.cs
 		src\Strict.ruleset = src\Strict.ruleset
@@ -34,11 +31,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{ABA5AE1F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.Registration", "src\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.csproj", "{9C042358-8E3F-42FC-845E-CD15D10BEDD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.net40", "src\ServiceModel.Composition\ServiceModel.Composition.net40.csproj", "{27323B09-9920-4324-8BE2-C1DAEC0FC663}"
-EndProject
 Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "ServiceModel.Composition.nuget", "src\ServiceModel.Composition.nuget\ServiceModel.Composition.nuget.nuproj", "{492867B5-53F2-4623-8B74-65E24E128A47}"
 EndProject
 Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "ServiceModel.Composition.Registration.nuget", "src\ServiceModel.Composition.Registration.nuget\ServiceModel.Composition.Registration.nuget.nuproj", "{50C8446E-1D3C-4100-97EC-60CEC48BE230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.net40", "src\ServiceModel.Composition.net40\ServiceModel.Composition.net40.csproj", "{27323B09-9920-4324-8BE2-C1DAEC0FC663}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,10 +67,6 @@ Global
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C042358-8E3F-42FC-845E-CD15D10BEDD8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Release|Any CPU.Build.0 = Release|Any CPU
 		{492867B5-53F2-4623-8B74-65E24E128A47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{492867B5-53F2-4623-8B74-65E24E128A47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{492867B5-53F2-4623-8B74-65E24E128A47}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,6 +75,10 @@ Global
 		{50C8446E-1D3C-4100-97EC-60CEC48BE230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50C8446E-1D3C-4100-97EC-60CEC48BE230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50C8446E-1D3C-4100-97EC-60CEC48BE230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27323B09-9920-4324-8BE2-C1DAEC0FC663}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
