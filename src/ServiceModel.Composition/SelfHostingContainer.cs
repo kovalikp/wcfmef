@@ -8,7 +8,7 @@
     using ServiceModel.Composition.Internal;
 
     /// <summary>
-    /// Service container for self-hosted environment. 
+    /// Service container for self-hosted environment.
     /// Uses implementations of <see cref="ISelfHostingConfiguration"/> interface to discover services.
     /// </summary>
     public partial class SelfHostingContainer

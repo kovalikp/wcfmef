@@ -69,7 +69,7 @@ namespace ServiceModel.Composition
 
         private async Task FromAsync(
             Func<ServiceHost, Func<AsyncCallback, object, IAsyncResult>> beginMethod,
-            Func<ServiceHost, Action<IAsyncResult>> endMethod, 
+            Func<ServiceHost, Action<IAsyncResult>> endMethod,
             CancellationToken cancellationToken)
         {
             var tasks = new List<Task>();

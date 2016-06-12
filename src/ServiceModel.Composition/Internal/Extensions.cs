@@ -21,7 +21,7 @@
                 configuration.Value.Configure(serviceHost);
             }
         }
-        
+
         internal static Export ExportService(this CompositionContainer container, string contractName, Type exportType)
         {
             contractName = contractName ?? AttributedModelServices.GetContractName(exportType);
@@ -32,12 +32,12 @@
         internal static Export ExportService(this CompositionContainer container, string contractName, string requiredTypeIdentity)
         {
             var importDefinition = new ContractBasedImportDefinition(
-                contractName, 
+                contractName,
                 requiredTypeIdentity,
-                null, 
-                ImportCardinality.ZeroOrMore, 
-                true, 
-                true, 
+                null,
+                ImportCardinality.ZeroOrMore,
+                true,
+                true,
                 CreationPolicy.Any);
 
             Export export = container.GetExports(importDefinition).FirstOrDefault();
@@ -84,7 +84,6 @@
                 .FirstOrDefault(x => x.ArgumentType == typeof(string));
 
             return (string)instanceContextModeArgument.Value;
-
         }
 
         internal static bool IsNotNullAndContains<T>(this T[] array, T item)
@@ -111,7 +110,7 @@
         {
             return targetServices.ServiceType == null || targetServices.ServiceType == serviceDescription.ServiceType;
         }
-        
+
         internal static bool MatchesExport(this Meta<TargetEndpoints> targetEnpoints, ServiceDescription serviceDescription, ServiceEndpoint serviceEndpoint)
         {
             return targetEnpoints.View.Any(x => x.MatchesExport(serviceDescription, serviceEndpoint));

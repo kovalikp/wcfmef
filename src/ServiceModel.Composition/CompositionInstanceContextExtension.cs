@@ -17,23 +17,38 @@
         private Export _export;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositionInstanceContextExtension"/> class.
+        /// Initializes a new instance of the <see cref="CompositionInstanceContextExtension" /> class.
         /// </summary>
+        /// <param name="container">The composition container.</param>
+        /// <param name="exportContractName">Name of the export contract.</param>
         public CompositionInstanceContextExtension(CompositionContainer container, string exportContractName)
         {
             _container = container;
             ExportContractName = exportContractName;
         }
 
+        /// <summary>
+        /// Gets contract name of the exported value.
+        /// </summary>
+        /// <value>
+        /// The name of the export contract.
+        /// </value>
         public string ExportContractName { get; private set; }
 
+        /// <summary>
+        /// Gets metadata of the exported value.
+        /// </summary>
+        /// <value>
+        /// The export metadata.
+        /// </value>
+        /// <exception cref="System.InvalidOperationException">Value has not been exported.</exception>
         public IDictionary<string, object> ExportMetadata
         {
             get
             {
                 if (_export == null)
                 {
-                    throw new InvalidOperationException("");
+                    throw new InvalidOperationException("Value has not been exported.");
                 }
 
                 return _export.Metadata;
@@ -53,6 +68,26 @@
             _container.SatisfyImportsOnce(part);
         }
 
+        /// <summary>
+        /// Enables an extension object to find out when it has been aggregated. Called when
+        /// the extension is added to the <see cref="IExtensibleObject{T}.Extensions"/> property.
+        /// </summary>
+        /// <param name="owner">The extensible object that aggregates this extension.</param>
+        void IExtension<InstanceContext>.Attach(InstanceContext owner)
+        {
+            // pass
+        }
+
+        /// <summary>
+        /// Enables an object to find out when it is no longer aggregated. Called when an
+        /// extension is removed from the <see cref="IExtensibleObject{T}.Extensions"/> property.
+        /// </summary>
+        /// <param name="owner">The extensible object that aggregates this extension.</param>
+        void IExtension<InstanceContext>.Detach(InstanceContext owner)
+        {
+            // pass
+        }
+
         internal object ExportInstance(string contractName, Type serviceType)
         {
             _export = _container.ExportService(contractName, serviceType);
@@ -63,16 +98,6 @@
         {
             _container.ReleaseExport(_export);
             _export = null;
-        }
-
-        void IExtension<InstanceContext>.Attach(InstanceContext owner)
-        {
-            // pass
-        }
-
-        void IExtension<InstanceContext>.Detach(InstanceContext owner)
-        {
-            // pass
         }
     }
 }

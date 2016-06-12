@@ -11,7 +11,7 @@
     /// The <see cref="ExportServiceConfigurationAttribute.ServiceType"/>
     /// property will be used to match behavior to target service.
     /// Empty <see cref="System.Array"/> or <see langword="null" /> values will be matched to any service.
-    /// You can use attribute multiple times. 
+    /// You can use attribute multiple times.
     /// </remarks>
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]

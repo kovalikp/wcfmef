@@ -1,7 +1,6 @@
-﻿#if NET40
-
-namespace ServiceModel.Composition
+﻿namespace ServiceModel.Composition
 {
+#if NET40
     using System.Collections.Generic;
     using System.ServiceModel;
 
@@ -25,6 +24,5 @@ namespace ServiceModel.Composition
             }
         }
     }
-}
-
 #endif
+}

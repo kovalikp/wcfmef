@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition", "src\ServiceModel.Composition\ServiceModel.Composition.csproj", "{D4AF1521-7281-49B1-B9BB-E940682AF4F2}"
 EndProject
@@ -15,14 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostedService", "sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHostedService", "samples\WebHostedService\WebHostedService.csproj", "{CB87960A-ED54-414E-AF5C-12CF53F69E00}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{71CA721B-06BF-4858-AB89-481BA2AB048A}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{16B115C5-2372-491F-8A0A-CE4AAB1E2059}"
 	ProjectSection(SolutionItems) = preProject
 		build.cmd = build.cmd
@@ -31,15 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{16B115
 		src\SharedAssemblyInfo.cs = src\SharedAssemblyInfo.cs
 		src\SharedAssemblyVersionInfo.cs = src\SharedAssemblyVersionInfo.cs
 		src\Strict.ruleset = src\Strict.ruleset
+		src\stylecop.json = src\stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{ABA5AE1F-E0AF-4E9A-B90A-A99855096DC3}"
 	ProjectSection(SolutionItems) = preProject
-		tools\DelaySigning.targets = tools\DelaySigning.targets
 		tools\ServiceModel.Composition.props = tools\ServiceModel.Composition.props
 		tools\ServiceModel.Composition.targets = tools\ServiceModel.Composition.targets
-		tools\SkipStrongNames.targets = tools\SkipStrongNames.targets
-		tools\SkipStrongNames.xml = tools\SkipStrongNames.xml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModel.Composition.Registration", "src\ServiceModel.Composition.Registration\ServiceModel.Composition.Registration.csproj", "{9C042358-8E3F-42FC-845E-CD15D10BEDD8}"

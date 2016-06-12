@@ -65,7 +65,7 @@
             {
                 throw new ArgumentNullException("serviceHostBase");
             }
-            
+
             var instanceProvider = new CompositionInstanceProvider(Container, ContractName);
             foreach (ChannelDispatcherBase dispatcher in serviceHostBase.ChannelDispatchers)
             {

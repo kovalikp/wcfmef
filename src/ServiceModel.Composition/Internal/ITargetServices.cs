@@ -5,6 +5,7 @@
     /// <summary>
     /// Metadata information for <see cref="ExportServiceBehaviorAttribute"/>.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Internal.")]
     internal interface ITargetServices : IContractTypeIdentity
     {
         Type ServiceType { get; }

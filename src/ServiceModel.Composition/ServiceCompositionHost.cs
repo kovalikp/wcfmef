@@ -22,7 +22,7 @@
         private CompositionContainer _container;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceCompositionHost"/> class with specified composition container 
+        /// Initializes a new instance of the <see cref="ServiceCompositionHost"/> class with specified composition container
         /// the instance of the service and its base addresses specified.
         /// </summary>
         /// <param name="container">The container.</param>
@@ -49,8 +49,7 @@
 
         /// <summary>
         /// Applies exported service, contracts, endpoints and operations behaviors.
-        /// If service has neither <see cref="ExportServiceAttribute"/> or <see cref="ExportContractAttribute"/>,
-        /// it will attach new <see cref="ExportServiceAttribute"/>.
+        /// If service does not have <see cref="ExportServiceAttribute"/>, one will be automatically attached.
         /// </summary>
         protected override void OnOpening()
         {

@@ -3,35 +3,13 @@
 Project global pre-settings.
 **************************************************************************************************** -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--<Import Project="$(CustomBeforeServiceModelCompositionTargets)" Condition="Exists('$(CustomBeforeServiceModelCompositionTargets)')" Label="Pre-targets Build Extensibility Point."/>-->
-
-  <PropertyGroup>
-    <VersionMajor Condition="'$(VersionMajor)' == ''">1</VersionMajor>
-    <VersionMinor Condition="'$(VersionMinor)' == ''">0</VersionMinor>
-    <VersionBuild Condition="'$(VersionBuild)' == ''">3</VersionBuild>
-    <VersionRevision Condition="'$(VersionRevision)' == ''">0</VersionRevision>
-    <VersionRelease Condition="'$(VersionRelease)' == ''">3</VersionRelease>
-  </PropertyGroup>
-
   <PropertyGroup>
     <OutputPath Condition="'$(OutputPath)' == ''">$(RepositoryRoot)bin\$(TargetFrameworkVersion)\$(Configuration)\</OutputPath>
     <!--<DocumentationFile>$(MSBuildProjectDirectory)\$(OutputPath)$(AssemblyName).xml</DocumentationFile>-->
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)obj\$(TargetFrameworkVersion)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <StyleCopEnabled Condition="'$(StyleCopEnabled)' == ''">true</StyleCopEnabled>
-    <StyleCopOverrideSettingsFile>$(RepositoryRoot)src\Settings.StyleCop</StyleCopOverrideSettingsFile>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <StyleCopTreatErrorsAsWarnings Condition="'$(StyleCopTreatErrorsAsWarnings)' == ''">true</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Use CustomAfterMicrosoftCommonTargets property (Microsoft.Common.targets) to inject project post-targets  -->
-    <!-- Note: this is how common properties are defined that must be set _after_ the properties in the .csproj files e.g. VS11 -->
-    <!--<CustomAfterMicrosoftCommonTargets>$(MSBuildThisFileDirectory)ServiceModel.Composition.targets</CustomAfterMicrosoftCommonTargets>
-    <CustomAfterNuGetProjTargets>$(MSBuildThisFileDirectory)ServiceModel.Composition.targets</CustomAfterNuGetProjTargets>-->
-  </PropertyGroup>
 </Project>

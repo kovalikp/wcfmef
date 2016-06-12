@@ -11,25 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectToBuild Include="ServiceModel.Composition.sln">
-      <DelaySigning>true</DelaySigning>
-    </ProjectToBuild>
+    <ProjectToBuild Include="ServiceModel.Composition.sln" />
   </ItemGroup>
-
-  <ItemGroup>
-    <!--<NonCoreProjectToBuild Include="test\ServiceModel.Composition\UnitTests\UnitTests.csproj">
-     <RestorePackages>true</RestorePackages>
-   </NonCoreProjectToBuild>-->
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectToBuild Include="@(NonCoreProjectToBuild)" Condition="'$(BuildCoreOnly)' != 'true'" />
-  </ItemGroup>
-
-  <!--<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.cmd))\tools\ServiceModel.Composition.props" />-->
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-
-
+  
   <Target Name="Clean">
     <MSBuild Targets="Clean"
              Projects="@(ProjectToBuild)"
@@ -37,59 +21,12 @@
              BuildInParallel="true" />
   </Target>
 
-  <Target Name="RestorePackages">
-    <PropertyGroup>
-      <RequireRestoreConsent>false</RequireRestoreConsent>
-    </PropertyGroup>
-    <Message Text="Restoring NuGet packages..." Importance="High" />
-    <MSBuild Projects="@(ProjectToBuild->WithMetadataValue('RestorePackages', 'true'))" 
-             Targets="RestorePackages" 
-             Properties="RequireRestoreConsent=$(RequireRestoreConsent)" />
-  </Target>
-
-  <Target Name="RestoreSolutionPackages" DependsOnTargets="CheckPrerequisites" AfterTargets="RestorePackages">
-    <PropertyGroup>
-      <PackagesConfig>$([System.IO.Path]::Combine($(NuGetToolsPath), "packages.config"))</PackagesConfig>
-      <SolutionRequireConsentSwitch Condition=" $(RequireRestoreConsent) == 'true' ">-RequireConsent</SolutionRequireConsentSwitch>
-      <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(SolutionRequireConsentSwitch) -solutionDir "$(SolutionDir) "</RestoreCommand>
-    </PropertyGroup>
-    <Exec Command="$(RestoreCommand)"
-          LogStandardErrorAsError="true" />
-  </Target>
-
-  <Target Name="Build" DependsOnTargets="RestoreSolutionPackages">
+  <Target Name="Build">
     <MSBuild Targets="Build"
              Projects="@(ProjectToBuild)"
              Properties="Configuration=$(Configuration);$(BuildProperties)"
              BuildInParallel="true">
       <Output ItemName="ProjectBuilt" TaskParameter="TargetOutputs"/>
     </MSBuild>
-  </Target>
-
-  <Target Name="Rebuild" DependsOnTargets="Clean;Build" Outputs="@(ProjectBuilt)" />
-
-  <Target Name="CheckSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
-    <MSBuild Targets="CheckSkipStrongNames"
-             Projects="tools\SkipStrongNames.targets" />
-  </Target>
-
-  <Target Name="EnableSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
-    <MSBuild Targets="EnableSkipStrongNames"
-             Projects="tools\SkipStrongNames.targets" />
-  </Target>
-
-  <Target Name="DisableSkipStrongNames" DependsOnTargets="RestoreSolutionPackages">
-    <MSBuild Targets="DisableSkipStrongNames"
-             Projects="tools\SkipStrongNames.targets" />
-  </Target>
-
-  <Target Name="Test" DependsOnTargets="CheckSkipStrongNames;Build">
-    <!--<MSBuild Projects="tools\xUnit.targets"
-            Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
-  </Target>
-
-  <Target Name="CodeCoverage" DependsOnTargets="RestoreSolutionPackages;Build">
-    <!--<MSBuild Projects="tools\OpenCover.targets"
-            Properties="Configuration=$(Configuration);$(BuildProperties)" />-->
   </Target>
 </Project>

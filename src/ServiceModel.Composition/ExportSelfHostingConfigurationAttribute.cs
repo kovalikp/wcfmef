@@ -40,7 +40,7 @@
         {
             ServiceType = serviceType;
         }
-        
+
         /// <summary>
         /// Gets the service types that will be exported by <see cref="SelfHostingContainer"/>.
         /// </summary>

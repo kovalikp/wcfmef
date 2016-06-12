@@ -23,16 +23,16 @@
     public sealed class ExportEndpointBehaviorAttribute : ExportContractTypeIdentityAttribute, ITargetEndpoints
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
+        /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class
         /// exporting the marked type for any endpoint of any service type.
         /// </summary>
-        public ExportEndpointBehaviorAttribute() 
-            : this(null) 
-        { 
+        public ExportEndpointBehaviorAttribute()
+            : this(null)
+        {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class 
+        /// Initializes a new instance of the <see cref="ExportEndpointBehaviorAttribute"/> class
         /// exporting the marked type for any endpoint of specified service type.
         /// </summary>
         /// <param name="serviceType">The service types.</param>
