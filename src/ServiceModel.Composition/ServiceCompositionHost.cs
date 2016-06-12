@@ -103,15 +103,6 @@
         private void ApplyExportBehavior()
         {
             var exportServices = Description.Behaviors.FindAll<ExportServiceAttribute>();
-            var exportContracts = Description.Endpoints.SelectMany(x => YieldExportServiceAttribute(x.Contract.Behaviors)).ToList();
-
-            foreach (var exportContract in exportContracts)
-            {
-                if (exportContract.Container == null)
-                {
-                    exportContract.Container = _container;
-                }
-            }
 
             foreach (var exportService in exportServices)
             {
@@ -121,7 +112,7 @@
                 }
             }
 
-            if (exportServices.Count + exportContracts.Count == 0)
+            if (exportServices.Count == 0)
             {
                 Description.Behaviors.Add(new ExportServiceAttribute(_container, null));
             }
@@ -156,14 +147,6 @@
                 {
                     Description.Behaviors.Add(behavior.Value);
                 }
-            }
-        }
-
-        private IEnumerable<ExportContractAttribute> YieldExportServiceAttribute(KeyedCollection<Type, IContractBehavior> contractBehaviors)
-        {
-            if (contractBehaviors.Contains(typeof(ExportContractAttribute)))
-            {
-                yield return contractBehaviors[typeof(ExportContractAttribute)] as ExportContractAttribute;
             }
         }
     }

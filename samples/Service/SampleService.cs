@@ -4,7 +4,8 @@
     using System.ComponentModel.Composition;
     using System.ServiceModel;
 
-    [ExportService(UsePerServiceInstancing = true)]
+    [ExportService()]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class SampleService : ISampleService
     {
@@ -13,6 +14,8 @@
         private static int _serviceCounter = 0;
 
         private int _serviceId;
+
+        private int _pingCounter;
 
         public SampleService()
         {
@@ -29,11 +32,13 @@
 
         public PingResponse Ping(PingRequest pingRequest)
         {
+            _pingCounter++;
             return new PingResponse
             {
                 ClientId = pingRequest.ClientId,
                 ServiceId = _serviceId,
-                ManagedThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId
+                ManagedThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId,
+                Count = _pingCounter
             };
         }
     }

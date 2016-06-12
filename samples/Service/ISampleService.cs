@@ -34,9 +34,12 @@
         [DataMember(Order = 2)]
         public int ManagedThreadId { get; set; }
 
+        [DataMember(Order = 3)]
+        public int Count { get; set; }
+
         public override string ToString()
         {
-            return String.Format("Client {0}, Service {1}, Managed thread {2}", ClientId, ServiceId, ManagedThreadId);
+            return $"Client {ClientId}, Service {ServiceId}, Managed thread {ManagedThreadId}, Count {Count}";
         }
     }
 }

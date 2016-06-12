@@ -1,17 +1,20 @@
 ﻿namespace ServiceModel.Composition
 {
     using System;
+    using System.ComponentModel.Composition.Hosting;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
     using System.ServiceModel.Dispatcher;
 
     internal class CompositionInstanceContextInitializer : IInstanceContextInitializer
     {
-        private bool _filterCatalog;
+        private readonly CompositionContainer _container;
+        private readonly string _exportContractName;
 
-        public CompositionInstanceContextInitializer(bool filterCatalog)
+        public CompositionInstanceContextInitializer(CompositionContainer container, string exportContractName)
         {
-            _filterCatalog = filterCatalog;
+            _container = container;
+            _exportContractName = exportContractName;
         }
 
         public void Initialize(InstanceContext instanceContext, Message message)
@@ -21,7 +24,7 @@
                 throw new ArgumentNullException("instanceContext");
             }
 
-            instanceContext.Extensions.Add(new CompositionInstanceContextExtension(_filterCatalog));
+            instanceContext.Extensions.Add(new CompositionInstanceContextExtension(_container, _exportContractName));
         }
     }
 }

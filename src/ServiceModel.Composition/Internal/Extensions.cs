@@ -21,18 +21,15 @@
                 configuration.Value.Configure(serviceHost);
             }
         }
-
-        internal static object ExportService(this CompositionContainer container, Type exportType)
-        {
-            return container.ExportService(AttributedModelServices.GetContractName(exportType), exportType);
-        }
         
-        internal static object ExportService(this CompositionContainer container, string contractName, Type exportType)
+        internal static Export ExportService(this CompositionContainer container, string contractName, Type exportType)
         {
-            return container.ExportService(contractName, AttributedModelServices.GetTypeIdentity(exportType));
+            contractName = contractName ?? AttributedModelServices.GetContractName(exportType);
+            var requiredTypeIdentity = AttributedModelServices.GetTypeIdentity(exportType);
+            return container.ExportService(contractName, requiredTypeIdentity);
         }
 
-        internal static object ExportService(this CompositionContainer container, string contractName, string requiredTypeIdentity)
+        internal static Export ExportService(this CompositionContainer container, string contractName, string requiredTypeIdentity)
         {
             var importDefinition = new ContractBasedImportDefinition(
                 contractName, 
@@ -50,7 +47,7 @@
                 throw new InvalidOperationException();
             }
 
-            return export.Value;
+            return export;
         }
 
         internal static InstanceContextMode GetInstanceContextMode(this Type serviceType)
@@ -69,6 +66,25 @@
                 .FirstOrDefault(x => x.MemberInfo.Name == "InstanceContextMode");
 
             return (InstanceContextMode)instanceContextModeArgument.TypedValue.Value;
+        }
+
+        internal static string GetExportContractName(this Type serviceType)
+        {
+            var exportServiceAttribute = serviceType.GetCustomAttributesData()
+                .FirstOrDefault(x => x.Constructor.DeclaringType == typeof(ExportServiceAttribute));
+
+            if (exportServiceAttribute == null)
+            {
+                return default(string);
+            }
+
+            var typedArgument =
+                exportServiceAttribute.ConstructorArguments ?? Enumerable.Empty<CustomAttributeTypedArgument>();
+            var instanceContextModeArgument = typedArgument
+                .FirstOrDefault(x => x.ArgumentType == typeof(string));
+
+            return (string)instanceContextModeArgument.Value;
+
         }
 
         internal static bool IsNotNullAndContains<T>(this T[] array, T item)

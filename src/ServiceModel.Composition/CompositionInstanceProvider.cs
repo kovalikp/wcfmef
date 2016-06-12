@@ -12,21 +12,18 @@
     /// </summary>
     public class CompositionInstanceProvider : IInstanceProvider
     {
-        private readonly string _contractName;
-        private readonly Type _contractType;
+        private readonly string _exportContractName;
         private readonly CompositionContainer _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositionInstanceProvider"/> class.
         /// </summary>
         /// <param name="container">The composition container.</param>
-        /// <param name="contractName">Contract name that is used to export the service.</param>
-        /// <param name="contractType">Contract type that is used to export the service.</param>
-        public CompositionInstanceProvider(CompositionContainer container, string contractName, Type contractType)
+        /// <param name="exportContractName">Contract name that is used to export the service.</param>
+        public CompositionInstanceProvider(CompositionContainer container, string exportContractName)
         {
             _container = container;
-            _contractName = contractName;
-            _contractType = contractType;
+            _exportContractName = exportContractName;
         }
 
         /// <summary>
@@ -44,13 +41,9 @@
                 throw new ArgumentNullException("instanceContext");
             }
 
+            var serviceType = instanceContext.Host.Description.ServiceType;
             var extension = instanceContext.Extensions.Find<CompositionInstanceContextExtension>();
-            var container = extension.GetInsanceContextContainer(_container);
-
-            var contractType = _contractType ?? instanceContext.Host.Description.ServiceType;
-            return _contractName == null
-                ? container.ExportService(contractType)
-                : container.ExportService(_contractName, contractType);
+            return extension.ExportInstance(_exportContractName, serviceType);
         }
 
         /// <summary>
@@ -78,18 +71,7 @@
             }
 
             var extension = instanceContext.Extensions.Find<CompositionInstanceContextExtension>();
-            if (extension != null)
-            {
-                extension.DisposeInstanceContextContainer();
-            }
-            else
-            {
-                var disposable = instance as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
-            }
+            extension.ReleaseInstance();
         }
     }
 }

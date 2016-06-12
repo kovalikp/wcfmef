@@ -205,6 +205,7 @@
           <xs:element minOccurs="0" name="ClientId" type="xs:int" />
           <xs:element minOccurs="0" name="ServiceId" type="xs:int" />
           <xs:element minOccurs="0" name="ManagedThreadId" type="xs:int" />
+          <xs:element minOccurs="0" name="Count" type="xs:int" />
         </xs:sequence>
       </xs:complexType>
       <xs:element name="PingResponse" nillable="true" type="tns:PingResponse" />
@@ -243,7 +244,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>http://localhost:49793/SampleService.svc</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>CORP\pkovalik</Upn>
+          <Upn>Inferno\kovalikp</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

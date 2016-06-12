@@ -63,12 +63,10 @@
     <Compile Include="..\SharedAssemblyVersionInfo.cs">
       <Link>Properties\SharedAssemblyVersionInfo.cs</Link>
     </Compile>
-    <Compile Include="CompositionInstanceContextExtension .cs" />
+    <Compile Include="CompositionInstanceContextExtension.cs" />
     <Compile Include="CompositionInstanceProvider.cs" />
     <Compile Include="CompositionInstanceContextInitializer.cs" />
-    <Compile Include="FilteredCatalog.net40.cs" />
     <Compile Include="SelfHostingContainer.net40.cs" />
-    <Compile Include="ExportContractAttribute.cs" />
     <Compile Include="ExportContractBehaviorAttribute.cs" />
     <Compile Include="ExportContractTypeIdentityAttribute.cs" />
     <Compile Include="ExportEndpointBehaviorAttribute.cs" />

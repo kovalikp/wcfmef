@@ -41,15 +41,6 @@
             Container = container;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether use filtered composition container catalog. Enables
-        /// per service instancing behavior.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if use per service instancing behavior; otherwise, <c>false</c>.
-        /// </value>
-        public bool UsePerServiceInstancing { get; set; }
-
         internal CompositionContainer Container { get; set; }
 
         /// <summary>
@@ -75,7 +66,7 @@
                 throw new ArgumentNullException("serviceHostBase");
             }
             
-            var instanceProvider = new CompositionInstanceProvider(Container, ContractName, ContractType);
+            var instanceProvider = new CompositionInstanceProvider(Container, ContractName);
             foreach (ChannelDispatcherBase dispatcher in serviceHostBase.ChannelDispatchers)
             {
                 var channelDispatcher = dispatcher as ChannelDispatcher;
@@ -88,8 +79,7 @@
                 foreach (EndpointDispatcher endpointDispatcher in channelDispatcher.Endpoints)
                 {
                     endpointDispatcher.DispatchRuntime.InstanceProvider = instanceProvider;
-                    endpointDispatcher.DispatchRuntime.InstanceContextInitializers.Add(
-                        new CompositionInstanceContextInitializer(UsePerServiceInstancing));
+                    endpointDispatcher.DispatchRuntime.InstanceContextInitializers.Add(new CompositionInstanceContextInitializer(Container, ContractName));
                 }
             }
         }

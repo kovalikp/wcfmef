@@ -49,7 +49,8 @@
                         serviceHostTemp = new ServiceCompositionHost(container, serviceType, baseAddresses);
                         break;
                     case InstanceContextMode.Single:
-                        var singleton = container.ExportService(serviceType);
+                        var contractName = serviceType.GetExportContractName();
+                        var singleton = container.ExportService(contractName, serviceType);
                         serviceHostTemp = new ServiceCompositionHost(container, singleton, baseAddresses);
                         break;
                 }

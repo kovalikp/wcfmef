@@ -10,7 +10,7 @@
     {
         public override string ToString()
         {
-            return String.Format("Client {0}, Service {1}, Managed thread {2}", ClientId, ServiceId, ManagedThreadId);
+            return $"Client {ClientId}, Service {ServiceId}, Managed thread {ManagedThreadId}, Count {Count}";
         }
     }
 }
